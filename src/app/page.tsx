@@ -1,6 +1,5 @@
 'use client';
 
-import { Zap, AlertTriangle, Activity, Users } from 'lucide-react';
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { BebanChart } from '@/components/dashboard/BebanChart';
 import { GangguanChart } from '@/components/dashboard/GangguanChart';
@@ -31,25 +30,25 @@ export default function DashboardPage() {
       
       {/* Quick Discovery Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <a href="/rekomendasi" className="block bg-gradient-to-r from-indigo-900/40 to-slate-800/80 border border-indigo-500/30 rounded-xl p-5 hover:border-indigo-500/60 transition-colors shadow-lg shadow-indigo-500/10">
+        <a href="/argis/peta" className="block bg-gradient-to-r from-indigo-900/40 to-slate-800/80 border border-indigo-500/30 rounded-xl p-5 hover:border-indigo-500/60 transition-colors shadow-lg shadow-indigo-500/10">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
             </div>
             <div>
-              <h3 className="font-bold text-slate-100 text-lg">Modul Rekomendasi Cerdas</h3>
-              <p className="text-sm text-slate-400">Analisis geospasial AI untuk ekspansi & _blank spot_</p>
+              <h3 className="font-bold text-slate-100 text-lg">Peta Interaktif Argis</h3>
+              <p className="text-sm text-slate-400">Visualisasi GeoJSON dari file ZIP pada peta Leaflet</p>
             </div>
           </div>
         </a>
-        <a href="/diagram" className="block bg-gradient-to-r from-cyan-900/40 to-slate-800/80 border border-cyan-500/30 rounded-xl p-5 hover:border-cyan-500/60 transition-colors shadow-lg shadow-cyan-500/10">
+        <a href="/argis/statistik" className="block bg-gradient-to-r from-cyan-900/40 to-slate-800/80 border border-cyan-500/30 rounded-xl p-5 hover:border-cyan-500/60 transition-colors shadow-lg shadow-cyan-500/10">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
             </div>
             <div>
-              <h3 className="font-bold text-slate-100 text-lg">Generator Gambar Otomatis</h3>
-              <p className="text-sm text-slate-400">Cetak Single Line Diagram (SLD) instan otomatis</p>
+              <h3 className="font-bold text-slate-100 text-lg">Statistik & Grafik Data</h3>
+              <p className="text-sm text-slate-400">Analisis distribusi dan ringkasan atribut GeoJSON</p>
             </div>
           </div>
         </a>
