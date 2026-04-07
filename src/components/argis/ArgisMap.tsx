@@ -20,10 +20,23 @@ export function ArgisMap({ layers, visibleLayers }: ArgisMapProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return;
+    if (!mapRef.current) return;
+
+    // Cleanup any stale Leaflet instance left by React StrictMode double-invoke
+    const container = mapRef.current as HTMLDivElement & { _leaflet_id?: number };
+    if (container._leaflet_id) {
+      delete container._leaflet_id;
+    }
+    if (mapInstanceRef.current) {
+      (mapInstanceRef.current as { remove: () => void }).remove();
+      mapInstanceRef.current = null;
+      layerGroupsRef.current.clear();
+    }
 
     // Dynamically import Leaflet to avoid SSR issues
     import('leaflet').then((L) => {
+      if (!mapRef.current) return; // guard against unmount during async import
+
       // Fix default icon paths
       delete (L.Icon.Default.prototype as Record<string, unknown>)._getIconUrl;
       L.Icon.Default.mergeOptions({
@@ -32,7 +45,7 @@ export function ArgisMap({ layers, visibleLayers }: ArgisMapProps) {
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
       });
 
-      const map = L.map(mapRef.current!, {
+      const map = L.map(mapRef.current, {
         center: [-8.2, 124.5],
         zoom: 10,
         zoomControl: true,
@@ -53,6 +66,11 @@ export function ArgisMap({ layers, visibleLayers }: ArgisMapProps) {
       if (mapInstanceRef.current) {
         (mapInstanceRef.current as { remove: () => void }).remove();
         mapInstanceRef.current = null;
+        layerGroupsRef.current.clear();
+      }
+      // Also clear the Leaflet container id so a re-mount starts fresh
+      if (mapRef.current) {
+        delete (mapRef.current as HTMLDivElement & { _leaflet_id?: number })._leaflet_id;
       }
     };
   }, []);
