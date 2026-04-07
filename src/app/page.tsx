@@ -1,5 +1,3 @@
-'use client';
-
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { BebanChart } from '@/components/dashboard/BebanChart';
 import { GangguanChart } from '@/components/dashboard/GangguanChart';
@@ -56,28 +54,28 @@ export default function DashboardPage() {
 
       <div className="charts-grid">
         <div className="chart-card full-width">
-          <div className="card-title">📊 Beban Penyulang (24 Jam)</div>
+          <div className="card-title">Beban Penyulang (24 Jam)</div>
           <BebanChart />
         </div>
         <div className="chart-card">
-          <div className="card-title">⚡ Gangguan per Penyebab</div>
+          <div className="card-title">Gangguan per Penyebab</div>
           <GangguanChart />
         </div>
         <div className="chart-card">
-          <div className="card-title">📈 Trend Gangguan Bulanan</div>
+          <div className="card-title">Trend Gangguan Bulanan</div>
           <KeandalanChart />
         </div>
       </div>
 
       <div className="chart-card" style={{ marginBottom: 24 }}>
-        <div className="card-title">📦 Ringkasan Asset Terkini</div>
+        <div className="card-title">Ringkasan Asset Terkini</div>
         <div className="overflow-x-auto">
           <AssetSummaryTable />
         </div>
       </div>
 
       <div className="chart-card" style={{ marginBottom: 24 }}>
-        <div className="card-title">🚨 Gangguan Terkini</div>
+        <div className="card-title">Gangguan Terkini</div>
         <GangguanTable />
       </div>
     </>
