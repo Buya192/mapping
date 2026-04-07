@@ -20,38 +20,32 @@ export function ArgisMap({ layers, visibleLayers }: ArgisMapProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const container = mapRef.current;
-    if (!container) return;
+    if (!mapRef.current) return;
 
-    let destroyed = false;
-
-    // Fully purge any existing Leaflet state from the DOM node
-    type LeafletContainer = HTMLDivElement & {
-      _leaflet_id?: number;
-      _leaflet_events?: unknown;
-    };
-    const el = container as LeafletContainer;
-    if (el._leaflet_id != null) {
-      delete el._leaflet_id;
-    }
-
-    import('leaflet').then((L) => {
-      if (destroyed || !mapRef.current) return;
-
-      // If a map already exists on this element (StrictMode second run), remove it first
-      const existingMap = (L as unknown as { _map?: { remove: () => void } })._map;
-      if (existingMap) existingMap.remove();
-
-      // Also remove via mapInstanceRef
+    // Destroy any existing map instance on this element before creating a new one.
+    // This handles React StrictMode double-invocation and HMR re-mounts.
+    const destroyExisting = () => {
       if (mapInstanceRef.current) {
-        (mapInstanceRef.current as { remove: () => void }).remove();
+        try { (mapInstanceRef.current as { remove: () => void }).remove(); } catch (_) { /* already removed */ }
         mapInstanceRef.current = null;
         layerGroupsRef.current.clear();
+        setIsLoaded(false);
       }
+      // Clear Leaflet's internal container registry
+      const el = mapRef.current as HTMLElement & { _leaflet_id?: number };
+      if (el) delete el._leaflet_id;
+    };
 
-      // Re-check container after async gap
-      const el2 = mapRef.current as LeafletContainer;
-      if (el2._leaflet_id != null) delete el2._leaflet_id;
+    destroyExisting();
+
+    let cancelled = false;
+
+    import('leaflet').then((L) => {
+      if (cancelled || !mapRef.current) return;
+
+      // Clear again after async gap in case StrictMode cleanup ran
+      const el = mapRef.current as HTMLElement & { _leaflet_id?: number };
+      delete el._leaflet_id;
 
       delete (L.Icon.Default.prototype as Record<string, unknown>)._getIconUrl;
       L.Icon.Default.mergeOptions({
@@ -73,20 +67,12 @@ export function ArgisMap({ layers, visibleLayers }: ArgisMapProps) {
       }).addTo(map);
 
       mapInstanceRef.current = map;
-      if (!destroyed) setIsLoaded(true);
+      if (!cancelled) setIsLoaded(true);
     });
 
     return () => {
-      destroyed = true;
-      if (mapInstanceRef.current) {
-        (mapInstanceRef.current as { remove: () => void }).remove();
-        mapInstanceRef.current = null;
-        layerGroupsRef.current.clear();
-      }
-      if (mapRef.current) {
-        const c = mapRef.current as LeafletContainer;
-        if (c._leaflet_id != null) delete c._leaflet_id;
-      }
+      cancelled = true;
+      destroyExisting();
     };
   }, []);
 

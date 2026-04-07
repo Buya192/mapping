@@ -3,7 +3,9 @@ import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
 import { exec } from 'child_process';
-import sql from '@/lib/db';
+import { neon } from '@neondatabase/serverless';
+
+const sql = neon(process.env.DATABASE_URL!);
 
 const execAsync = promisify(exec);
 
