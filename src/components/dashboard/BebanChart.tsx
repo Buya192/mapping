@@ -2,9 +2,14 @@
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const data = Array.from({ length: 24 }, (_, i) => ({
+const BEBAN_DATA = [
+  2120, 2050, 1980, 1940, 1900, 2010, 2380, 2900, 3400, 3800, 4100, 4320,
+  4500, 4450, 4380, 4200, 4050, 4100, 4300, 4600, 4720, 4400, 3800, 3000,
+];
+
+const data = BEBAN_DATA.map((beban, i) => ({
   jam: `${String(i).padStart(2, '0')}:00`,
-  beban: Math.floor(2000 + Math.random() * 2800 + Math.sin(i / 3) * 600),
+  beban,
 }));
 
 export function BebanChart() {

@@ -1,5 +1,3 @@
-'use client';
-
 const assets = [
   { layer: 'Gardu Distribusi', jumlah: 142, status: 'Aktif', keterangan: 'GD Tiang & Portal' },
   { layer: 'Trafo 20kV/380V', jumlah: 89, status: 'Aktif', keterangan: 'Distribusi utama' },

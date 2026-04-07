@@ -2,12 +2,20 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-const data = months.map((bulan, i) => ({
-  bulan,
-  gangguan: Math.floor(5 + Math.random() * 10 + Math.sin(i / 2) * 3),
-  padam: Math.floor(2 + Math.random() * 5),
-}));
+const data = [
+  { bulan: 'Jan', gangguan: 12, padam: 4 },
+  { bulan: 'Feb', gangguan: 8,  padam: 3 },
+  { bulan: 'Mar', gangguan: 15, padam: 6 },
+  { bulan: 'Apr', gangguan: 10, padam: 4 },
+  { bulan: 'Mei', gangguan: 7,  padam: 2 },
+  { bulan: 'Jun', gangguan: 9,  padam: 3 },
+  { bulan: 'Jul', gangguan: 13, padam: 5 },
+  { bulan: 'Agu', gangguan: 11, padam: 4 },
+  { bulan: 'Sep', gangguan: 14, padam: 5 },
+  { bulan: 'Okt', gangguan: 9,  padam: 3 },
+  { bulan: 'Nov', gangguan: 6,  padam: 2 },
+  { bulan: 'Des', gangguan: 8,  padam: 3 },
+];
 
 export function KeandalanChart() {
   return (

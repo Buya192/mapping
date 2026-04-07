@@ -1,5 +1,3 @@
-'use client';
-
 const gangguan = [
   { id: 'GNG-001', penyulang: 'KLB-01', lokasi: 'Kalabahi Barat', penyebab: 'Pohon tumbang', status: 'proses', waktu: '07:23' },
   { id: 'GNG-002', penyulang: 'KLB-02', lokasi: 'Kalabahi Timur', penyebab: 'Petir', status: 'lapor', waktu: '08:41' },
