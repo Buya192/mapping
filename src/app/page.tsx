@@ -5,6 +5,7 @@ import { KeandalanChart } from '@/components/dashboard/KeandalanChart';
 import { GangguanTable } from '@/components/dashboard/GangguanTable';
 import { AssetSummaryTable } from '@/components/dashboard/AssetSummaryTable';
 
+// Dashboard: Analisa Asset & Switchgear PLN ULP Kalabahi
 export default function DashboardPage() {
   return (
     <>
