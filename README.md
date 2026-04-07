@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PLN Jarkom - Sistem Analisa Jaringan Distribusi
 
-## Getting Started
+Aplikasi dashboard untuk monitoring, analisa, dan perencanaan jaringan kelistrikan PLN ULP Kalabahi terintegrasi dengan data ArcGIS.
 
-First, run the development server:
+## Fitur Unggulan Modern (v2.0)
+
+### 1. Unified Search & Data Management
+- **Search Engine**: Pencarian fuzzy global untuk koordinat, ID tiang, dan nama gardu.
+- **Data Tables**: Tampilan data terfragmentasi (Trafo, Tiang, Jaringan) untuk memudahkan audit aset dalam jumlah besar.
+
+### 2. Network Health & Analytics
+- **Integrity Audit**: Validasi otomatis konektivitas spasial ArGis untuk mendeteksi tiang "terisolasi" (tidak terhubung ke sistem).
+- **Power Flow Simulation**: Integrasi Pandapower untuk simulasi aliran daya berbasis data geometri asli.
+
+### 3. Survey & Planning (Rensis NTT)
+- **Automatic BoM**: Estimasi kebutuhan material (Tiang, Isolator, Konduktor) secara otomatis berdasarkan hasil survey di peta.
+- **Tabbed Sidebar**: Antarmuka peta yang bersih dengan pemisahan fungsi Layer, Survey, dan Analisa.
+
+## Integrasi Data ArcGIS (GDB)
+
+Aplikasi ini mendukung sinkronisasi data langsung dari file ArcGIS GDB.
+
+### Cara Sinkronisasi:
+1. Simpan file GDB di folder `_new_arg/arg.gdb`.
+2. Jalankan skrip ekstraksi:
+   ```bash
+   python extract_gdb_final.py
+   ```
+3. GeoJSON akan diperbarui di `public/data/` dan dimuat otomatis oleh peta.
+
+## Menjalankan Analisa Engine (Python)
+
+Pastikan backend Python berjalan untuk fitur simulasi:
+```bash
+cd python-engine
+pip install -r requirements.txt
+python main.py
+```
+Akses di `http://localhost:8000`.
+
+## Pengembangan Frontend
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Akses di `http://localhost:3000`.

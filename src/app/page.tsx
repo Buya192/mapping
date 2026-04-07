@@ -1,65 +1,86 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { Zap, AlertTriangle, Activity, Users } from 'lucide-react';
+import { SummaryCards } from '@/components/dashboard/SummaryCards';
+import { BebanChart } from '@/components/dashboard/BebanChart';
+import { GangguanChart } from '@/components/dashboard/GangguanChart';
+import { KeandalanChart } from '@/components/dashboard/KeandalanChart';
+import { GangguanTable } from '@/components/dashboard/GangguanTable';
+import { AssetSummaryTable } from '@/components/dashboard/AssetSummaryTable';
+
+export default function DashboardPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <h1 className="page-title flex items-center gap-3">
+            Analisa Asset & Switchgear
+            <span className="text-xs px-2 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full font-mono uppercase tracking-wider relative top-[-2px]">
+              Argis Data Terintegrasi
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <p className="page-subtitle">Sistem Informasi Geospasial PLN ULP Kalabahi</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="live-indicator">
+          <span className="live-dot"></span>
+          LIVE
         </div>
-      </main>
-    </div>
+      </div>
+
+      <SummaryCards />
+      
+      {/* Quick Discovery Links */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <a href="/rekomendasi" className="block bg-gradient-to-r from-indigo-900/40 to-slate-800/80 border border-indigo-500/30 rounded-xl p-5 hover:border-indigo-500/60 transition-colors shadow-lg shadow-indigo-500/10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-100 text-lg">Modul Rekomendasi Cerdas</h3>
+              <p className="text-sm text-slate-400">Analisis geospasial AI untuk ekspansi & _blank spot_</p>
+            </div>
+          </div>
+        </a>
+        <a href="/diagram" className="block bg-gradient-to-r from-cyan-900/40 to-slate-800/80 border border-cyan-500/30 rounded-xl p-5 hover:border-cyan-500/60 transition-colors shadow-lg shadow-cyan-500/10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-100 text-lg">Generator Gambar Otomatis</h3>
+              <p className="text-sm text-slate-400">Cetak Single Line Diagram (SLD) instan otomatis</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div className="charts-grid">
+        <div className="chart-card full-width">
+          <div className="card-title">📊 Beban Penyulang (24 Jam)</div>
+          <BebanChart />
+        </div>
+        <div className="chart-card">
+          <div className="card-title">⚡ Gangguan per Penyebab</div>
+          <GangguanChart />
+        </div>
+        <div className="chart-card">
+          <div className="card-title">📈 Trend Gangguan Bulanan</div>
+          <KeandalanChart />
+        </div>
+      </div>
+
+      <div className="chart-card" style={{ marginBottom: 24 }}>
+        <div className="card-title">📦 Ringkasan Asset Terkini</div>
+        <div className="overflow-x-auto">
+          <AssetSummaryTable />
+        </div>
+      </div>
+
+      <div className="chart-card" style={{ marginBottom: 24 }}>
+        <div className="card-title">🚨 Gangguan Terkini</div>
+        <GangguanTable />
+      </div>
+    </>
   );
 }
