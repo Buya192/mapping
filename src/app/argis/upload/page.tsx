@@ -1,66 +1,90 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
-import { Upload, CheckCircle2, AlertCircle, FileArchive, RefreshCw, FolderOpen } from 'lucide-react';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { Upload, CheckCircle2, AlertCircle, FileArchive, RefreshCw, FolderOpen, Database, Clock, Layers } from 'lucide-react';
 
-type FileInfo = {
-  path: string;
-  size: number;
-  ext: string;
+type ImportRow = {
+  id: number;
+  filename: string;
+  file_size: number | null;
+  imported_at: string;
+  status: string;
+  error_message: string | null;
 };
 
-type UploadResult = {
-  zipFile: string;
-  totalFiles: number;
-  geojsonLayers: { name: string; featureCount: number; geometryType: string }[];
-  structure: FileInfo[];
+type LayerRow = {
+  layer_id: number;
+  layer_name: string;
+  geometry_type: string;
+  feature_count: number;
+  property_keys: string[];
+  zip_filename: string;
 };
 
 function formatBytes(bytes: number): string {
+  if (!bytes) return '-';
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 }
 
-const EXT_COLORS: Record<string, string> = {
-  '.geojson': '#22c55e',
-  '.json': '#3b82f6',
-  '.gpkg': '#8b5cf6',
-  '.shp': '#f97316',
-  '.csv': '#06b6d4',
-  '.kml': '#eab308',
-  '.kmz': '#ec4899',
-  '.prj': '#94a3b8',
-  '.dbf': '#94a3b8',
-  '.shx': '#94a3b8',
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+const STATUS_COLOR: Record<string, string> = {
+  done: '#22c55e',
+  processing: '#eab308',
+  error: '#ef4444',
+  pending: '#64748b',
 };
 
 export default function UploadPage() {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [result, setResult] = useState<UploadResult | null>(null);
+  const [importingServer, setImportingServer] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentInfo, setCurrentInfo] = useState<UploadResult | null>(null);
-  const [loadingInfo, setLoadingInfo] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [imports, setImports] = useState<ImportRow[]>([]);
+  const [layers, setLayers] = useState<LayerRow[]>([]);
+  const [loadingDB, setLoadingDB] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const fetchCurrentInfo = useCallback(async () => {
-    setLoadingInfo(true);
+  const fetchDB = useCallback(async () => {
+    setLoadingDB(true);
     try {
-      const r = await fetch('/api/argis?action=list');
-      const d = await r.json();
-      if (d.error) throw new Error(d.error);
-      setCurrentInfo(d);
-    } catch (e) {
-      // silently ignore
+      const [imp, lay] = await Promise.all([
+        fetch('/api/argis?action=imports&source=db').then(r => r.json()),
+        fetch('/api/argis?action=layers&source=db').then(r => r.json()),
+      ]);
+      setImports(imp.imports ?? []);
+      setLayers(lay.layers ?? []);
+    } catch {
+      // silent
     } finally {
-      setLoadingInfo(false);
+      setLoadingDB(false);
     }
   }, []);
 
-  useState(() => {
-    fetchCurrentInfo();
-  });
+  useEffect(() => { fetchDB(); }, [fetchDB]);
+
+  // Import the server-side ZIP into the database
+  const handleImportServer = useCallback(async () => {
+    setImportingServer(true);
+    setError(null);
+    setSuccessMsg(null);
+    try {
+      const res = await fetch('/api/argis', { method: 'PUT' });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error ?? 'Import gagal');
+      setSuccessMsg('File ZIP server berhasil diimpor ke database.');
+      await fetchDB();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Import gagal');
+    } finally {
+      setImportingServer(false);
+    }
+  }, [fetchDB]);
 
   const handleFile = useCallback(async (file: File) => {
     if (!file.name.toLowerCase().endsWith('.zip')) {
@@ -69,30 +93,24 @@ export default function UploadPage() {
     }
     setUploading(true);
     setError(null);
-    setResult(null);
-
+    setSuccessMsg(null);
     try {
       const form = new FormData();
       form.append('file', file);
       const res = await fetch('/api/argis', { method: 'POST', body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'Upload gagal');
-
-      // Fetch updated info
-      const infoRes = await fetch('/api/argis?action=list');
-      const info = await infoRes.json();
-      setResult(info);
-      setCurrentInfo(info);
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error ?? 'Upload gagal');
+      setSuccessMsg(`File "${file.name}" berhasil diupload dan diimpor ke database.`);
+      await fetchDB();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Upload gagal');
     } finally {
       setUploading(false);
     }
-  }, []);
+  }, [fetchDB]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(false);
+    e.preventDefault(); setDragging(false);
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
   }, [handleFile]);
@@ -103,151 +121,147 @@ export default function UploadPage() {
   }, [handleFile]);
 
   return (
-    <div style={{ paddingBottom: 40, maxWidth: 900, margin: '0 auto' }}>
+    <div style={{ paddingBottom: 40, maxWidth: 960, margin: '0 auto' }}>
       <div className="page-header">
-        <h1 className="page-title">Upload File ZIP</h1>
-        <p className="page-subtitle">Upload file ZIP berisi data GeoJSON / GeoPackage untuk dipetakan</p>
+        <h1 className="page-title">Upload & Import Data</h1>
+        <p className="page-subtitle">Upload file ZIP GeoJSON dan impor ke database Neon PostgreSQL</p>
       </div>
 
-      {/* Upload zone */}
-      <div
-        className="chart-card"
-        style={{
-          marginBottom: 20,
-          border: `2px dashed ${dragging ? '#3b82f6' : 'var(--border-color)'}`,
-          background: dragging ? 'rgba(59,130,246,0.06)' : undefined,
-          transition: 'all 0.2s',
-          cursor: 'pointer',
-        }}
-        onDragOver={e => { e.preventDefault(); setDragging(true); }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={onDrop}
-        onClick={() => inputRef.current?.click()}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept=".zip"
-          style={{ display: 'none' }}
-          onChange={onInputChange}
-        />
-        <div style={{ textAlign: 'center', padding: '32px 20px' }}>
+      {/* Actions row */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+        {/* Upload zone */}
+        <div
+          style={{
+            flex: 2, minWidth: 280,
+            border: `2px dashed ${dragging ? '#3b82f6' : 'var(--border-color)'}`,
+            borderRadius: 12,
+            background: dragging ? 'rgba(59,130,246,0.06)' : 'var(--bg-card)',
+            transition: 'all 0.2s',
+            cursor: 'pointer',
+            padding: '28px 24px',
+            textAlign: 'center',
+          }}
+          onDragOver={e => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={onDrop}
+          onClick={() => inputRef.current?.click()}
+        >
+          <input ref={inputRef} type="file" accept=".zip" style={{ display: 'none' }} onChange={onInputChange} />
           {uploading ? (
             <>
-              <RefreshCw size={40} style={{ margin: '0 auto 16px', color: '#3b82f6', animation: 'spin 1s linear infinite' }} />
-              <p style={{ fontSize: 16, fontWeight: 600, color: '#f1f5f9' }}>Mengupload dan memproses file...</p>
-              <p style={{ fontSize: 13, color: '#64748b', marginTop: 6 }}>Mengekstrak dan membaca GeoJSON...</p>
+              <RefreshCw size={36} style={{ margin: '0 auto 12px', color: '#3b82f6', animation: 'spin 1s linear infinite' }} />
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#f1f5f9' }}>Mengupload dan mengimpor...</p>
+              <p style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>Menyimpan ke database Neon</p>
             </>
           ) : (
             <>
-              <FileArchive size={40} style={{ margin: '0 auto 16px', color: dragging ? '#3b82f6' : '#64748b' }} />
-              <p style={{ fontSize: 16, fontWeight: 600, color: '#f1f5f9' }}>
-                {dragging ? 'Lepas untuk upload' : 'Drag & drop file ZIP di sini'}
+              <FileArchive size={36} style={{ margin: '0 auto 12px', color: dragging ? '#3b82f6' : '#64748b' }} />
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#f1f5f9' }}>
+                {dragging ? 'Lepas untuk upload' : 'Drag & drop file ZIP'}
               </p>
-              <p style={{ fontSize: 13, color: '#64748b', marginTop: 6 }}>atau klik untuk pilih file</p>
-              <p style={{ fontSize: 11, color: '#475569', marginTop: 10 }}>
-                Mendukung: .zip berisi .geojson, .json, .gpkg
-              </p>
+              <p style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>atau klik untuk pilih file</p>
+              <p style={{ fontSize: 11, color: '#475569', marginTop: 8 }}>Mendukung: .zip berisi .geojson, .json</p>
             </>
           )}
         </div>
-      </div>
 
-      {error && (
-        <div className="card" style={{ borderColor: 'rgba(239,68,68,0.3)', marginBottom: 16, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 10, color: '#ef4444' }}>
-          <AlertCircle size={16} /><span style={{ fontSize: 13 }}>{error}</span>
-        </div>
-      )}
-
-      {result && (
-        <div className="card" style={{ borderColor: 'rgba(34,197,94,0.3)', marginBottom: 20, padding: '16px 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, color: '#22c55e' }}>
-            <CheckCircle2 size={18} />
-            <span style={{ fontSize: 14, fontWeight: 600 }}>Upload berhasil! File diproses.</span>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-            <div style={{ background: 'var(--bg-secondary)', borderRadius: 8, padding: '10px 14px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total File</div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9' }}>{result.totalFiles}</div>
-            </div>
-            <div style={{ background: 'var(--bg-secondary)', borderRadius: 8, padding: '10px 14px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Layer GeoJSON</div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#22c55e' }}>{result.geojsonLayers?.length ?? 0}</div>
-            </div>
-            <div style={{ background: 'var(--bg-secondary)', borderRadius: 8, padding: '10px 14px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Nama File</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#3b82f6', wordBreak: 'break-all' }}>{result.zipFile}</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Current ZIP structure */}
-      <div className="chart-card">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <div className="card-title" style={{ marginBottom: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <FolderOpen size={14} /> Struktur ZIP Aktif
+        {/* Import server ZIP */}
+        <div className="card" style={{ flex: 1, minWidth: 220, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 12, padding: '24px', textAlign: 'center' }}>
+          <Database size={32} style={{ color: '#3b82f6' }} />
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9', marginBottom: 4 }}>Import ZIP Server</p>
+            <p style={{ fontSize: 11, color: '#64748b' }}>Import file ZIP yang sudah ada di server ke database</p>
           </div>
           <button
-            onClick={fetchCurrentInfo}
-            className="btn btn-secondary"
-            style={{ fontSize: 12, padding: '6px 12px', gap: 6 }}
-            disabled={loadingInfo}
+            className="btn btn-primary"
+            style={{ fontSize: 13, padding: '10px 20px', gap: 8, width: '100%' }}
+            onClick={handleImportServer}
+            disabled={importingServer}
           >
-            <RefreshCw size={12} style={loadingInfo ? { animation: 'spin 1s linear infinite' } : {}} />
-            Refresh
+            {importingServer
+              ? <><RefreshCw size={13} style={{ animation: 'spin 1s linear infinite' }} /> Mengimpor...</>
+              : <><Upload size={13} /> Import ke Database</>}
+          </button>
+        </div>
+      </div>
+
+      {/* Notifications */}
+      {error && (
+        <div className="card" style={{ borderColor: 'rgba(239,68,68,0.3)', marginBottom: 14, padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 10, color: '#ef4444' }}>
+          <AlertCircle size={15} /><span style={{ fontSize: 13 }}>{error}</span>
+        </div>
+      )}
+      {successMsg && (
+        <div className="card" style={{ borderColor: 'rgba(34,197,94,0.3)', marginBottom: 14, padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 10, color: '#22c55e' }}>
+          <CheckCircle2 size={15} /><span style={{ fontSize: 13 }}>{successMsg}</span>
+        </div>
+      )}
+
+      {/* Import history */}
+      <div className="chart-card" style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div className="card-title" style={{ marginBottom: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Clock size={14} /> Riwayat Import
+          </div>
+          <button onClick={fetchDB} className="btn btn-secondary" style={{ fontSize: 12, padding: '6px 12px', gap: 6 }} disabled={loadingDB}>
+            <RefreshCw size={12} style={loadingDB ? { animation: 'spin 1s linear infinite' } : {}} /> Refresh
           </button>
         </div>
 
-        {loadingInfo && (
-          <div style={{ color: '#64748b', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 0' }}>
-            <RefreshCw size={13} style={{ animation: 'spin 1s linear infinite' }} /> Memuat...
+        {loadingDB ? (
+          <div style={{ color: '#64748b', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <RefreshCw size={13} style={{ animation: 'spin 1s linear infinite' }} /> Memuat dari database...
+          </div>
+        ) : imports.length === 0 ? (
+          <p style={{ fontSize: 13, color: '#64748b' }}>Belum ada import. Upload atau import ZIP dari server.</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {imports.map(imp => (
+              <div key={imp.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', background: 'var(--bg-secondary)', borderRadius: 8, border: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
+                <FileArchive size={16} style={{ color: '#3b82f6', flexShrink: 0 }} />
+                <span style={{ fontSize: 13, color: '#f1f5f9', fontWeight: 500, flex: 1, wordBreak: 'break-all' }}>{imp.filename}</span>
+                <span style={{ fontSize: 11, color: '#64748b' }}>{formatBytes(imp.file_size ?? 0)}</span>
+                <span style={{ fontSize: 11, color: '#64748b' }}>{formatDate(imp.imported_at)}</span>
+                <span style={{
+                  fontSize: 11, fontWeight: 600, padding: '2px 10px', borderRadius: 12,
+                  color: STATUS_COLOR[imp.status] ?? '#94a3b8',
+                  background: `${STATUS_COLOR[imp.status] ?? '#94a3b8'}22`,
+                }}>
+                  {imp.status}
+                </span>
+                {imp.error_message && (
+                  <span style={{ fontSize: 11, color: '#ef4444', width: '100%' }}>{imp.error_message}</span>
+                )}
+              </div>
+            ))}
           </div>
         )}
+      </div>
 
-        {currentInfo && !loadingInfo && (
-          <>
-            <div style={{ fontSize: 12, color: '#64748b', marginBottom: 12 }}>
-              <strong style={{ color: '#94a3b8' }}>{currentInfo.zipFile}</strong> &mdash; {currentInfo.totalFiles} file total, {currentInfo.geojsonLayers?.length ?? 0} layer GeoJSON
-            </div>
-
-            {/* GeoJSON layers */}
-            {(currentInfo.geojsonLayers ?? []).length > 0 && (
-              <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Layer GeoJSON</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {currentInfo.geojsonLayers.map(l => (
-                    <div key={l.name} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'rgba(59,130,246,0.07)', borderRadius: 8, border: '1px solid rgba(59,130,246,0.15)' }}>
-                      <div style={{ width: 8, height: 8, borderRadius: 2, background: '#3b82f6', flexShrink: 0 }} />
-                      <span style={{ fontSize: 13, color: '#f1f5f9', fontWeight: 500, flex: 1 }}>{l.name}</span>
-                      <span style={{ fontSize: 11, color: '#64748b' }}>{l.featureCount} fitur</span>
-                      <span style={{ fontSize: 11, color: '#8b5cf6', background: 'rgba(139,92,246,0.15)', padding: '2px 8px', borderRadius: 12 }}>{l.geometryType}</span>
-                    </div>
-                  ))}
-                </div>
+      {/* Layers in database */}
+      <div className="chart-card">
+        <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+          <Layers size={14} /> Layer Tersimpan di Database ({layers.length})
+        </div>
+        {loadingDB ? (
+          <div style={{ color: '#64748b', fontSize: 13 }}>Memuat...</div>
+        ) : layers.length === 0 ? (
+          <p style={{ fontSize: 13, color: '#64748b' }}>Belum ada layer. Import ZIP terlebih dahulu.</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {layers.map(l => (
+              <div key={l.layer_id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'rgba(59,130,246,0.06)', borderRadius: 8, border: '1px solid rgba(59,130,246,0.15)', flexWrap: 'wrap' }}>
+                <div style={{ width: 8, height: 8, borderRadius: 2, background: '#3b82f6', flexShrink: 0 }} />
+                <span style={{ fontSize: 13, color: '#f1f5f9', fontWeight: 500, flex: 1 }}>{l.layer_name}</span>
+                <span style={{ fontSize: 11, color: '#64748b' }}>{l.feature_count.toLocaleString()} fitur</span>
+                <span style={{ fontSize: 11, color: '#8b5cf6', background: 'rgba(139,92,246,0.15)', padding: '2px 8px', borderRadius: 12 }}>
+                  {l.geometry_type}
+                </span>
+                <span style={{ fontSize: 11, color: '#06b6d4', background: 'rgba(6,182,212,0.1)', padding: '2px 8px', borderRadius: 12 }}>
+                  {l.property_keys?.length ?? 0} kolom
+                </span>
               </div>
-            )}
-
-            {/* All files */}
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Semua File</div>
-              <div style={{ maxHeight: 280, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {(currentInfo.structure ?? []).map(f => (
-                  <div key={f.path} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 6, fontSize: 12 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: 2, background: EXT_COLORS[f.ext] ?? '#64748b', flexShrink: 0 }} />
-                    <span style={{ flex: 1, color: '#94a3b8', fontFamily: 'monospace', fontSize: 11, wordBreak: 'break-all' }}>{f.path}</span>
-                    <span style={{ color: '#475569', whiteSpace: 'nowrap', fontSize: 11 }}>{formatBytes(f.size)}</span>
-                    <span style={{ color: EXT_COLORS[f.ext] ?? '#64748b', fontSize: 10, padding: '1px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 4 }}>{f.ext || 'file'}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-
-        {!currentInfo && !loadingInfo && (
-          <div style={{ fontSize: 13, color: '#64748b', padding: '12px 0' }}>
-            Belum ada file ZIP yang dimuat. Upload file ZIP di atas.
+            ))}
           </div>
         )}
       </div>
