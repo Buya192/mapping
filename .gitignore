@@ -39,3 +39,57 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# temp data & extracted files
+*.gdb/
+*.kmz
+*.zip
+*.csv
+*.txt
+*.html
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!next.config.json
+!public/manifest.json
+!public/data/*.json
+!public/data/**/*.json
+_extracted_arg/
+_new_arg/
+_arg_gdb.gdb/
+.KALABAHI_temp/
+.ULP_KALABAHI_temp/
+arg-20260406T131920Z-3-001/
+extract_pltd/
+python-engine/
+awesome-design-md-main/
+
+# temp python scripts (keep seed_all_data.py & rebuild_data.py)
+analyze_*.py
+check_*.py
+debug_*.py
+explore_*.py
+extract_*.py
+temp_*.py
+temp-*.py
+inspect_*.py
+investigate.py
+fix_topology.py
+find_plts_pltd.py
+generate_*.py
+enrich_*.py
+kill_and_clear.py
+list_gdb.py
+patch_map.py
+print_keys*.py
+probe_gdb.py
+process_*.py
+
+# temp js/misc
+fix.js
+query_db.js
+update_demo_data.js
+start-ai.bat
+*.md
+!README.md

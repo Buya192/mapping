@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="100%" height="100%" style="background:#0f172a; border-radius:8px; font-family:monospace;">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6" />
+    </marker>
+  </defs>
+
+  <!-- Grid Background -->
+  <rect width="800" height="400" fill="url(#grid)" />
+
+  <!-- Title -->
+  <rect x="20" y="20" width="280" height="70" fill="#1e293b" stroke="#334155" rx="6" />
+  <text x="35" y="45" fill="#f1f5f9" font-size="16" font-weight="bold">SINGLE LINE DIAGRAM</text>
+  <text x="35" y="65" fill="#3b82f6" font-size="12">Desa Mataru Utara - Perluasan Baru</text>
+  <text x="35" y="80" fill="#64748b" font-size="10">Digenerate Otomatis oleh AI Geospasial</text>
+
+  <!-- Main Feeder Line -->
+  <path d="M 50 200 L 700 200" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="8 4" />
+  
+  <!-- Feeder Source -->
+  <rect x="30" y="180" width="60" height="40" fill="#3b82f6" rx="4" />
+  <text x="40" y="205" fill="#fff" font-size="12" font-weight="bold">MALI</text>
+
+  <!-- Line Labels -->
+  <text x="300" y="190" fill="#cbd5e1" font-size="12">JTM A3C 150mm² (4.2 kms)</text>
+
+  <!-- Poles Interpolated (Sample) -->
+  <circle cx="150" cy="200" r="6" fill="#0f172a" stroke="#f1f5f9" stroke-width="2" />
+  <text x="140" y="225" fill="#94a3b8" font-size="10">85 Pole Segments</text>
+
+  <circle cx="350" cy="200" r="6" fill="#0f172a" stroke="#f1f5f9" stroke-width="2" />
+  <circle cx="550" cy="200" r="6" fill="#0f172a" stroke="#f1f5f9" stroke-width="2" />
+
+  <!-- Recloser / Protection -->
+  <rect x="420" y="190" width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2" transform="rotate(45 430 200)" />
+  <text x="410" y="180" fill="#ef4444" font-size="10">Recloser</text>
+
+  <!-- Transformer Substation -->
+  <polygon points="700,165 730,225 670,225" fill="none" stroke="#eab308" stroke-width="3" stroke-dasharray="4 2" />
+  <text x="696" y="210" fill="#eab308" font-size="16" font-weight="bold">T</text>
+  <text x="670" y="245" fill="#eab308" font-size="12">TRAFO 50 kVA</text>
+  <text x="670" y="260" fill="#94a3b8" font-size="10">Area Blank Spot Mataru</text>
+
+  <!-- Legend -->
+  <rect x="20" y="280" width="200" height="100" fill="#1e293b" opacity="0.9" stroke="#334155" rx="6" />
+  <text x="35" y="305" fill="#f1f5f9" font-size="12" font-weight="bold">LEGENDA</text>
+  
+  <circle cx="45" cy="325" r="4" fill="#0f172a" stroke="#f1f5f9" stroke-width="2" />
+  <text x="60" y="329" fill="#94a3b8" font-size="10">Tiang Perluasan Baru</text>
+
+  <polygon points="45,340 52,352 38,352" fill="none" stroke="#eab308" stroke-width="2" stroke-dasharray="2 1" />
+  <text x="60" y="350" fill="#94a3b8" font-size="10">Trafo Sisipan</text>
+
+  <path d="M 35 365 L 55 365" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2" />
+  <text x="60" y="369" fill="#94a3b8" font-size="10">Hantaran JTM</text>
+</svg>

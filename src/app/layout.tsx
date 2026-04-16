@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 
@@ -6,8 +6,13 @@ export const metadata: Metadata = {
   title: "PLN Jarkom - Sistem Manajemen Jaringan",
   description: "Sistem pemetaan dan monitoring jaringan kelistrikan PLN",
   manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
   themeColor: "#0a0e1a",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 import { StoreInitializer } from "@/components/layout/StoreInitializer";

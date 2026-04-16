@@ -1,0 +1,290 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// gardu-arcgis.geojson — 281 records, 52 properties
+// ============================================================
+model Gardu {
+  id                  String   @id
+  name                String           // Name
+  namaGardu           String?          // NAMAGD (AT048)
+  construction        String?          // RUJUKAN_KONSTRUKSI
+  capacity_kva        Int?             // KAPASITAS
+  brand               String?          // MANUFACTURER
+  phases              String?          // FASA_TRAFO
+  feeder              String?          // NAMAPENYULANG
+  lat                 Float
+  lng                 Float
+  // --- EXPANDED from ArcGIS ---
+  description         String?          // DESCRIPTION
+  peruntukan          String?          // PERUNTUKAN (UMUM/PLN)
+  thBuat              String?          // TH_BUAT (tahun pembuatan)
+  ulp                 String?          // ULP (KALABAHI)
+  noTrafo             String?          // NO_TRAFO
+  jenisTrafo          String?          // JENIS_TRAFO
+  namaSurveyor        String?          // NAMA_SURVEYOR
+  tglGambar           String?          // TGLGAMBAR
+  userGambar          String?          // USERGAMBAR
+  tableName           String?          // TABLENAME (TRAFO)
+  latitudeY           String?          // LATITUDEY (string presisi)
+  longitudeX          String?          // LONGITUDEX (string presisi)
+  status              String   @default("aktif")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("gardus")
+}
+
+// ============================================================
+// jtm-lines.geojson — 9649 records, 68 properties (POINT! Tiang JTM) 
+// ============================================================
+model JTMSegment {
+  id              String   @id
+  name            String           // Name / DESCRIPTION
+  feeder          String?          // Penyulang_KMZ / NAMAPENYULANG
+  length_km       Float?
+  voltage         String?
+  material        String?
+  conductor_type  String?
+  size_mm2        String?          // UKURAN_TIANG_TM
+  phases          String?
+  unit            String?          // UNITNAME
+  raw_length      String?          // PANJANG_HANTARAN
+  geometry        Json?
+  status          String   @default("aktif")
+  // full ArcGIS fields
+  asset_type      String?          // CXCLASSIFICATIONDESC
+  start_measure   String?
+  end_measure     String?
+  conductor_code  String?          // KODE_KONSTRUKSI_1
+  priority        String?
+  phase_position  String?
+  neutral         String?
+  mainline        String?
+  circuit         String?
+  ownership       String?          // STATUS_KEPEMILIKAN
+  cable_type      String?
+  // extra expanded
+  city            String?          // CITY
+  location        String?          // LOCATION
+  saddressCode    String?          // SADDRESSCODE
+  tujdNumber      String?          // TUJDNUMBER
+  typePondasi     String?          // TYPE_PONDASI
+  jenisTiang      String?          // JENIS_TIANG
+  latitudeY       String?          // LATITUDEY
+  longitudeX      String?          // LONGITUDEX
+  lat             Float?
+  lng             Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("jtm_segments")
+}
+
+// ============================================================
+// tiang-arcgis.geojson — 14424 records, 68 properties  
+// ============================================================
+model TiangJTM {
+  id                Int      @id @default(autoincrement())
+  objectId          Int?
+  nama_tiang        String           // NOTIANGTR
+  urutan_tiang      Int?
+  ulp               String?
+  sulp              String?
+  penyulang         String?          // NAMAPENYULANG
+  jenis_aset        String?          // CLASSIFICATION
+  asset_p3          String?
+  jenis_tiang       String?          // JENIS_TIANG
+  tipe_tiang        String?          // from UKURAN_TIANG
+  pondasi_tiang     String?
+  kekuatan_tiang    Int?             // KEKUATAN_TIANG
+  penopang          String?
+  konstruksi_1      String?          // KODE_KONSTRUKSI_1
+  konstruksi_2      String?          // KODE_KONSTRUKSI_4
+  jenis_hantaran_1  String?          // JENIS_PENGHANTAR
+  jenis_hantaran_2  String?
+  ukuran_hantaran_1 String?          // UKURAN_PENGHANTAR
+  ukuran_hantaran_2 String?
+  under_built       String?          // PERUNTUKAN
+  prioritas         Int?
+  vendor            String?
+  install_date      String?
+  operating_date    String?
+  alamat            String?
+  kepemilikan       String?
+  latitude          Float
+  longitude         Float
+  status            String   @default("aktif")
+  // --- EXPANDED from ArcGIS ---
+  kondisiTiang      String?          // KONDISI_TIANG (BAIK/KROPOS)
+  namaGardu         String?          // NAMAGD
+  namaSurveyor      String?          // NAMA_SURVEYOR
+  tglGambar         String?          // TGLGAMBAR
+  userGambar        String?          // USERGAMBAR
+  manufacturer      String?          // MANUFACTURER
+  tableName         String?          // TABLENAME
+  description       String?          // DESCRIPTION
+  ukuranTiang       String?          // UKURAN_TIANG (11/200)
+  panjangLvtc       Float?           // PANJANG LVTC
+  sa                Int?             // SA
+  fde               Int?             // FDE
+  la                Int?             // LA
+  tiangBesi         Int?             // TIANG_BESI
+  tiangBeton        Int?             // TIANG_BETON
+  tiang7            Int?             // TIANG_7
+  tiang9            Int?             // TIANG_9
+  tiang11           Int?             // TIANG_11
+  tiang12           Int?             // TIANG_12
+  treckSchoor       Int?             // TRECK_SCHOOR
+  druckSchoor       Int?             // DRUCK_SCHOOR
+  kontramast        Int?             // KONTRAMAST
+  externalRefId     Int?             // EXTERNALREFID
+  latitudeY         String?          // LATITUDEY (string)
+  longitudeX        String?          // LONGITUDEX (string)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("tiang_jtm")
+}
+
+// ============================================================
+// arg.gdb Points layer — 38 records
+// ============================================================
+model ArcgisPoint {
+  id          String   @id @default(cuid())
+  name        String?
+  folderPath  String?
+  symbolID    Int?
+  altMode     Int?
+  base        Float?
+  snippet     String?
+  popupInfo   String?
+  hasLabel    Int?
+  labelID     Int?
+  lat         Float
+  lng         Float
+  alt         Float?
+  status      String   @default("aktif")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("arcgis_points")
+}
+
+// ============================================================
+// jtr-lines.geojson — 1333 records, MultiLineString
+// ============================================================
+model JTRSegment {
+  id              String   @id
+  name            String?
+  description     String?          // DESCRIPTION
+  namaGardu       String?          // NAMAGD
+  penyulang       String?          // NAMAPENYULANG
+  feature         String?          // FEATURE (SUTR)
+  fasaJaringan    String?          // FASA_JARINGAN
+  jenisKabel      String?          // JENIS_KABEL
+  ukuranKawat     String?          // UKURAN_KAWAT
+  jurusan         String?          // JURUSAN
+  kodeHantaran    String?          // KODEHANTARAN
+  hantaranNetral  String?          // HANTARAN_NETRAL
+  panjangHantaran Float?           // PANJANG_HANTARAN
+  shapeLength     Float?           // SHAPE_Length
+  geometry        Json?
+  // extra expanded
+  ownerPemeliharaan String?        // OWNER_PEMELIHARAAN
+  userGambar      String?          // USERGAMBAR
+  tglGambar       String?          // TGLGAMBAR
+  tableName       String?          // TABLENAME
+  posisiFasa      String?          // POSISI_FASA
+  classification  String?          // CLASSIFICATION
+  status          String   @default("aktif")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("jtr_segments")
+}
+
+// ============================================================
+// sr-lines.geojson — 8805 records, MultiLineString
+// ============================================================
+model SRLine {
+  id              String   @id
+  namaGardu       String?          // NAMAGD
+  shapeLength     Float?           // SHAPE_Length
+  geometry        Json?
+  // extra expanded  
+  userGambar      String?          // USERGAMBAR
+  tableName       String?          // TABLENAME
+  status          String   @default("aktif")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("sr_lines")
+}
+
+// ============================================================
+// pelanggan.geojson — 9929 records
+// ============================================================
+model Pelanggan {
+  id              String   @id
+  namaGardu       String?          // NAMAGD
+  penyulang       String?          // NAMAPENYULANG
+  ulp             String?          // ULP
+  fasa            String?          // FASA
+  jenisKwh        String?          // JENIS_KWH
+  noKwhMeter      String?          // NOKWHMETER
+  kodeTiangTR     String?          // KODE_TIANG_TR
+  kondisiSR       String?          // KONDISI_SR
+  konektor        String?          // KONEKTOR
+  panjangHantaran Float?           // PANJANG_HANTARAN
+  segelApp        String?          // SEGEL_APP
+  tarikanKe       String?          // TARIKAN_KE
+  latitude        Float?
+  longitude       Float?
+  // --- EXPANDED from ArcGIS ---
+  jenisHantaran   String?          // JENIS_HANTARAN
+  ukuranKawat     String?          // UKURAN_KAWAT
+  namaSurveyor    String?          // NAMA_SURVEYOR
+  description     String?          // DESCRIPTION
+  rt              String?          // RT
+  sambunganKe     String?          // SAMBUNGAN_KE
+  sambungLangsung Int?             // SAMBUNG_LANGSUNG
+  tapKonektor     Int?             // TAP_KONEKTOR
+  dakStandat      Int?             // DAK_STANDAT
+  asesoris        String?          // ASESORIS
+  tglGambar       String?          // TGLGAMBAR
+  userGambar      String?          // USERGAMBAR
+  tableName       String?          // TABLENAME
+  status          String   @default("aktif")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("pelanggan")
+}
+
+// ============================================================
+// hardware-data.ts — PLTS, PLTD, FCO, Recloser/LBS
+// ============================================================
+model HardwareItem {
+  id                  String   @id
+  name                String
+  type                String             // pembangkit, fco, recloser
+  lat                 Float
+  lng                 Float
+  kapasitas_kw        Int?               // daya dalam kW
+  tegangan_kv         Float?             // tegangan dalam kV
+  merk                String?
+  rating_arus_ampere  Int?
+  konfigurasi         String?            // Solar PV, Diesel, 12.5kA Breaking
+  status              String   @default("Aktif")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("hardware_items")
+}

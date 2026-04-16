@@ -1,0 +1,1012 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Interkoneksi Alila",
+        "jenis": "INTERKONEKSI",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.508353,
+          -8.164249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Interkoneksi Alila",
+        "jenis": "INTERKONEKSI",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.491658,
+          -8.148895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "LBS Bota - CO Tulta",
+        "jenis": "LBS",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.454783,
+          -8.16035
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "LBS Bota - CO Tulta",
+        "jenis": "LBS",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.493617,
+          -8.145575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Batuputih - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.541172,
+          -8.127753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Batuputih - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.506556,
+          -8.132647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kafelulang - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.519553,
+          -8.317311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kafelulang - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.550225,
+          -8.323344
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Silapui - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.767333,
+          -8.294194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Silapui - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.762569,
+          -8.314811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kafakbeka - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.664319,
+          -8.166178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kafakbeka - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.652764,
+          -8.204683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Talwai - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.717672,
+          -8.245681
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Talwai - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.704253,
+          -8.244389
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kenarimbala - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.830525,
+          -8.236044
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kenarimbala - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.858817,
+          -8.168339
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Luba - Ujung TM Atengmelang",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.678856,
+          -8.163606
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Luba - Ujung TM Atengmelang",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.668097,
+          -8.224883
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Ujung TM Lakwati",
+        "jenis": "UJUNG_TM",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.665542,
+          -8.221094
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Ujung TM Lakwati",
+        "jenis": "UJUNG_TM",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.661486,
+          -8.228989
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kelaisi - CO Manetwati",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.717582,
+          -8.27979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kelaisi - CO Manetwati",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.674292,
+          -8.282433
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Manetwati - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.674653,
+          -8.28201
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Manetwati - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.683,
+          -8.247087
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Belemana - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.929764,
+          -8.255636
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Belemana - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.917881,
+          -8.256111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Probur - Ujung Us'akan",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.417442,
+          -8.375681
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Probur - Ujung Us'akan",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.393869,
+          -8.425517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Hopter - Ujung TM Tribur",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.416544,
+          -8.414861
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Hopter - Ujung TM Tribur",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.488333,
+          -8.422744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Marica - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.086383,
+          -8.363506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Marica - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.007408,
+          -8.408911
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Tamak - Rec. Airmama",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.208878,
+          -8.415289
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Tamak - Rec. Airmama",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.169256,
+          -8.447625
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Tonte - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.189264,
+          -8.401989
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Tonte - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.187044,
+          -8.371917
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Labuan - Ujung TM Helangdohi",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "pangkal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.286303,
+          -8.176579
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Labuan - Ujung TM Helangdohi",
+        "jenis": "CO",
+        "penyulang": "Kalabahi",
+        "posisi": "ujung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.287,
+          -8.183471
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Interkoneksi Alila",
+        "jenis": "INTERKONEKSI",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.508353,
+            -8.164249
+          ],
+          [
+            124.491658,
+            -8.148895
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "LBS Bota - CO Tulta",
+        "jenis": "LBS",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.454783,
+            -8.16035
+          ],
+          [
+            124.493617,
+            -8.145575
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Batuputih - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.541172,
+            -8.127753
+          ],
+          [
+            124.506556,
+            -8.132647
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kafelulang - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.519553,
+            -8.317311
+          ],
+          [
+            124.550225,
+            -8.323344
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Silapui - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.767333,
+            -8.294194
+          ],
+          [
+            124.762569,
+            -8.314811
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kafakbeka - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.664319,
+            -8.166178
+          ],
+          [
+            124.652764,
+            -8.204683
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Talwai - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.717672,
+            -8.245681
+          ],
+          [
+            124.704253,
+            -8.244389
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kenarimbala - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.830525,
+            -8.236044
+          ],
+          [
+            124.858817,
+            -8.168339
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Luba - Ujung TM Atengmelang",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.678856,
+            -8.163606
+          ],
+          [
+            124.668097,
+            -8.224883
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Ujung TM Lakwati",
+        "jenis": "UJUNG_TM",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.665542,
+            -8.221094
+          ],
+          [
+            124.661486,
+            -8.228989
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Kelaisi - CO Manetwati",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.717582,
+            -8.27979
+          ],
+          [
+            124.674292,
+            -8.282433
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Manetwati - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.674653,
+            -8.28201
+          ],
+          [
+            124.683,
+            -8.247087
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Belemana - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.929764,
+            -8.255636
+          ],
+          [
+            124.917881,
+            -8.256111
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Probur - Ujung Us'akan",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.417442,
+            -8.375681
+          ],
+          [
+            124.393869,
+            -8.425517
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Hopter - Ujung TM Tribur",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.416544,
+            -8.414861
+          ],
+          [
+            124.488333,
+            -8.422744
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Marica - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.086383,
+            -8.363506
+          ],
+          [
+            124.007408,
+            -8.408911
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Tamak - Rec. Airmama",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.208878,
+            -8.415289
+          ],
+          [
+            124.169256,
+            -8.447625
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Tonte - Ujung TM",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.189264,
+            -8.401989
+          ],
+          [
+            124.187044,
+            -8.371917
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "CO Labuan - Ujung TM Helangdohi",
+        "jenis": "CO",
+        "penyulang": "Kalabahi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            124.286303,
+            -8.176579
+          ],
+          [
+            124.287,
+            -8.183471
+          ]
+        ]
+      }
+    }
+  ]
+}

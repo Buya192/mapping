@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="JOSM">
+  <metadata>
+    <name>Jalur Baru Extension</name>
+  </metadata>
+  <wpt lat="-6.9380" lon="107.6180">
+    <name>Trafo Tambahan 1</name>
+    <desc>kategori: gardu, tipe: Trafo, kapasitas_mva: 150, status: aktif</desc>
+  </wpt>
+  <wpt lat="-6.9360" lon="107.6160">
+    <name>Tiang Sudut Baru</name>
+    <desc>kategori: tiang, tipe: sudut, material: beton, tinggi_m: 11</desc>
+  </wpt>
+  <wpt lat="-6.9340" lon="107.6140">
+    <name>Gardu Distribusi GD-99</name>
+    <desc>kategori: gardu, tipe: GD, kapasitas_mva: 600, status: proyek</desc>
+  </wpt>
+  <trk>
+    <name>Kabel SUTM 20kV Baru</name>
+    <desc>kategori: penyulang, tegangan_kv: 20, jenis_konduktor: AAAC, status: aktif</desc>
+    <trkseg>
+      <trkpt lat="-6.9400" lon="107.6200"></trkpt>
+      <trkpt lat="-6.9380" lon="107.6180"></trkpt>
+      <trkpt lat="-6.9360" lon="107.6160"></trkpt>
+      <trkpt lat="-6.9340" lon="107.6140"></trkpt>
+    </trkseg>
+  </trk>
+</gpx>
