@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertTriangle, Zap, TrendingUp, Shield } from 'lucide-react';
+import { AlertTriangle, Zap, TrendingUp, Shield, MapPin, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { BebanChart } from '@/components/dashboard/BebanChart';
 import { GangguanChart } from '@/components/dashboard/GangguanChart';
 import { KeandalanChart } from '@/components/dashboard/KeandalanChart';
 import { GangguanTable } from '@/components/dashboard/GangguanTable';
 import { AssetSummaryTable } from '@/components/dashboard/AssetSummaryTable';
+import { VerificationStats } from '@/components/dashboard/VerificationStats';
 
 function LiveClock() {
   const [time, setTime] = useState('');
@@ -64,6 +66,15 @@ export default function DashboardPage() {
       <div className="mb-8">
         <SummaryCards />
       </div>
+
+      {/* Verification Status */}
+      <div className="mb-8">
+        <div className="glass-card-header mb-4">
+          <CheckCircle2 size={16} />
+          [ VERIFICATION_STATUS ] Field Validation Metrics
+        </div>
+        <VerificationStats />
+      </div>
       
       {/* Quick Discovery Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -91,6 +102,30 @@ export default function DashboardPage() {
             </div>
           </div>
         </a>
+        <Link href="/verifikasi" className="discovery-card group" style={{ '--accent': '#34d399' } as React.CSSProperties}>
+          <div className="discovery-card-accent" style={{ background: '#34d399' }} />
+          <div className="flex items-start gap-4 relative z-10">
+            <div className="text-[#34d399] mt-1 group-hover:scale-110 transition-transform">
+              <CheckCircle2 size={24} />
+            </div>
+            <div>
+              <h3 className="font-bold tracking-tight text-[#e4e4e7] text-lg">Verifikasi Lapangan</h3>
+              <p className="text-[10px] font-mono text-[#52525b] mt-1 uppercase tracking-widest">GPS-based asset verification & validation</p>
+            </div>
+          </div>
+        </Link>
+        <Link href="/peta" className="discovery-card group" style={{ '--accent': '#f59e0b' } as React.CSSProperties}>
+          <div className="discovery-card-accent" style={{ background: '#f59e0b' }} />
+          <div className="flex items-start gap-4 relative z-10">
+            <div className="text-[#f59e0b] mt-1 group-hover:scale-110 transition-transform">
+              <MapPin size={24} />
+            </div>
+            <div>
+              <h3 className="font-bold tracking-tight text-[#e4e4e7] text-lg">Network Topology Map</h3>
+              <p className="text-[10px] font-mono text-[#52525b] mt-1 uppercase tracking-widest">Interactive network visualization & analysis</p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Charts Grid */}

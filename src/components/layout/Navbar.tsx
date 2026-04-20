@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { 
   LayoutDashboard, Map, Zap, MapPin, Activity, Cable, Users, Radio, 
-  ChevronDown, Shield, Cpu, GitBranch, BarChart3, Wrench, FolderKanban
+  ChevronDown, Shield, Cpu, GitBranch, BarChart3, Wrench, FolderKanban, CheckCircle2
 } from 'lucide-react';
 
 const dataMenus = [
@@ -47,6 +47,7 @@ export function Navbar() {
   const isDataPage = pathname.startsWith('/data');
   const isToolPage = ['/diagram', '/keandalan', '/rekomendasi', '/proyek', '/perencanaan'].includes(pathname);
   const isPeta = pathname === '/peta';
+  const isVerifikasi = pathname === '/verifikasi';
 
   return (
     <nav className={`nav-container ${isPeta ? 'nav-hidden' : ''}`}>
@@ -64,6 +65,9 @@ export function Navbar() {
           </Link>
           <Link href="/peta" className={`nav-link ${pathname === '/peta' ? 'active' : ''}`}>
             <Map size={18} /> Peta
+          </Link>
+          <Link href="/verifikasi" className={`nav-link ${pathname === '/verifikasi' ? 'active' : ''}`}>
+            <CheckCircle2 size={18} /> Verifikasi
           </Link>
 
           {/* Data Aset Dropdown */}
