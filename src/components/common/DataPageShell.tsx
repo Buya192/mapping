@@ -163,9 +163,9 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
   };
 
   return (
-    <div className={`min-h-screen ${bgMain} ${textMain} font-sans transition-colors duration-200`}>
+    <div className={`min-h-screen ${bgMain} ${textMain} font-sans transition-colors duration-200`} style={{ background: isLight ? '#f9fafb' : '#0d1117' }}>
       {/* Header Banner */}
-      <div className={`${bgHeader} border-b ${headerBorder} transition-colors duration-200`} style={!isLight ? { background: `linear-gradient(135deg, #09090b 0%, #${accentColor}08 100%)` } : {}}>
+      <div className={`border-b ${headerBorder} transition-colors duration-200`} style={!isLight ? { background: `linear-gradient(135deg, #0d1117 0%, #${accentColor}08 100%)` } : { background: '#ffffff' }}>
         <div className="max-w-[1800px] mx-auto px-6 py-6">
           <Link href="/" className={`inline-flex items-center gap-1 text-sm mb-4 font-semibold transition-colors ${isLight ? 'text-gray-500 hover:text-blue-600' : 'text-[#52525b] hover:text-white'}`}>
             <ChevronLeft size={16} /> Dashboard
@@ -240,7 +240,7 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
 
       {/* Spreadsheet Table */}
       <div className="max-w-[1800px] mx-auto px-6 pb-12 transition-colors duration-200">
-        <div className={`overflow-x-auto max-h-[70vh] border ${tableContainerBorder} ${isLight ? 'bg-white' : 'bg-[#0f0f11]'}`}>
+        <div className={`overflow-x-auto max-h-[70vh] border ${tableContainerBorder}`} style={{ background: isLight ? '#ffffff' : '#0a0a0c', borderColor: isLight ? '#e5e7eb' : '#1f1f23' }}>
           <table className={`w-full text-left border-collapse whitespace-nowrap ${isLight ? 'text-[11px]' : 'text-sm'}`}>
             <thead className="sticky top-0 z-20">
               <tr className={`${thBg} ${isLight ? 'border-b-2' : 'border-b'}`}>
