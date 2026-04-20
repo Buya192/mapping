@@ -33,31 +33,16 @@ export default function DashboardPage() {
     <>
       {/* Hero Banner */}
       <div className="dashboard-hero">
-        <div className="dashboard-hero-bg" />
-        <div className="relative z-10 flex justify-between items-end pb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <span className="hero-badge">
-                <Zap size={12} />
-                SYS_GRID
-              </span>
-              <span className="hero-badge-outline">
-                <Shield size={12} />
-                ULP KALABAHI
-              </span>
+        <div className="max-w-1400px mx-auto px-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1>PLN JARKOM Dashboard</h1>
+              <p className="text-secondary mt-2">Sistem Manajemen Jaringan & Perencanaan Distribusi</p>
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tighter text-white">
-              Asset Terminal Dashboard
-            </h1>
-            <p className="text-[#71717a] font-mono text-xs mt-1.5 flex items-center gap-3">
-              <span>GEO-SPATIAL OPS // Alor Sector</span>
-              <span className="text-[#27272a]">|</span>
-              {mounted && <LiveClock />}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 glass-badge">
-            <span className="w-2 h-2 bg-[#34d399] rounded-full animate-pulse shadow-[0_0_8px_#34d399]"></span>
-            <span className="text-[#34d399] font-mono text-[10px] uppercase tracking-widest">LIVE_LINK</span>
+            <div className="text-right">
+              <div className="text-secondary text-sm">Last Update</div>
+              <div className="font-mono text-accent-indigo">{mounted && <LiveClock />}</div>
+            </div>
           </div>
         </div>
       </div>

@@ -9,16 +9,22 @@ import {
 } from 'lucide-react';
 
 const dataMenus = [
-  { href: '/data/trafo', label: 'Gardu / Trafo', sub: 'gardu-arcgis · 281', icon: Zap },
-  { href: '/data/tiang', label: 'Tiang', sub: 'tiang-arcgis · 14.424', icon: MapPin },
-  { href: '/data/jtm', label: 'Tiang JTM', sub: 'jtm-lines · 9.649', icon: Activity },
-  { href: '/data/jtr', label: 'JTR', sub: 'jtr-lines · 1.333', icon: Cable },
-  { href: '/data/sr', label: 'SR', sub: 'sr-lines · 8.805', icon: Cable },
-  { href: '/data/pelanggan', label: 'Pelanggan', sub: 'pelanggan · 9.929', icon: Users },
-  { href: '/data/pembangkit', label: 'Pembangkit', sub: 'PLTS & PLTD · 14', icon: Cpu },
-  { href: '/data/proteksi', label: 'Proteksi', sub: 'FCO & Recloser · 92', icon: Shield },
-  { href: '/data/arcgis', label: 'Titik GIS Ekstra', sub: 'arg.gdb · 38', icon: Radio },
-  { href: '/data/sistem', label: 'Data Sistem', sub: 'ringkasan per penyulang', icon: BarChart3 },
+  { href: '/data/trafo', label: 'Gardu / Trafo', icon: Zap },
+  { href: '/data/tiang', label: 'Tiang', icon: MapPin },
+  { href: '/data/jtm', label: 'JTM', icon: Activity },
+  { href: '/data/jtr', label: 'JTR', icon: Cable },
+  { href: '/data/sr', label: 'SR', icon: Cable },
+  { href: '/data/pelanggan', label: 'Pelanggan', icon: Users },
+  { href: '/data/pembangkit', label: 'Pembangkit', icon: Cpu },
+  { href: '/data/proteksi', label: 'Proteksi', icon: Shield },
+  { href: '/data/sistem', label: 'Data Sistem', icon: BarChart3 },
+];
+
+const analisisMenus = [
+  { href: '/analisis/kabel', label: 'Analisis Kabel', icon: Cable },
+  { href: '/analisis/tiang', label: 'Analisis Tiang', icon: MapPin },
+  { href: '/analisis/coverage', label: 'Coverage Mapping', icon: Map },
+  { href: '/analisis/survey', label: 'Survey Tools', icon: Shield },
 ];
 
 const toolMenus = [
@@ -45,7 +51,8 @@ export function Navbar() {
   }, []);
 
   const isDataPage = pathname.startsWith('/data');
-  const isToolPage = ['/diagram', '/keandalan', '/rekomendasi', '/proyek', '/perencanaan'].includes(pathname);
+  const isAnalisisPage = pathname.startsWith('/analisis');
+  const isToolPage = ['/diagram', '/keandalan', '/rekomendasi', '/proyek'].includes(pathname);
   const isPeta = pathname === '/peta';
   const isVerifikasi = pathname === '/verifikasi';
 
@@ -105,7 +112,34 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Tools Dropdown */}
+          {/* Analisis Dropdown */}
+          <div ref={dataRef} className="relative">
+            <button
+              onClick={() => { setDataOpen(!dataOpen); setToolOpen(false); }}
+              className={`nav-link flex items-center gap-1 ${isAnalisisPage ? 'active' : ''}`}
+            >
+              <BarChart3 size={18} />
+              Analisis
+              <ChevronDown size={14} className={`transition-transform ${dataOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {dataOpen && (
+              <div className="dropdown-panel" style={{ minWidth: 220 }}>
+                <div className="p-1.5">
+                  {analisisMenus.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setDataOpen(false)}
+                      className={`dropdown-item ${pathname === item.href ? 'active' : ''}`}
+                    >
+                      <item.icon size={16} className={pathname === item.href ? 'text-[#34d399]' : 'text-[#52525b]'} />
+                      <div className="text-sm font-semibold">{item.label}</div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
           <div ref={toolRef} className="relative">
             <button
               onClick={() => { setToolOpen(!toolOpen); setDataOpen(false); }}
