@@ -86,7 +86,19 @@ const DEMO_ASSETS: AssetMarker[] = [
   { id: 'P001', name: 'Proteksi P1', type: 'proteksi', lat: -8.2242, lng: 124.1938, status: 'pending', color: '#a78bfa' },
 ];
 
-export default function VerificationMap() {
+interface VerificationMapProps {
+  onAssetSelect?: (asset: AssetMarker) => void;
+  onMapClick?: (coords: { lat: number; lng: number }) => void;
+  verifiedAssets?: any[];
+  assets?: AssetMarker[];
+}
+
+export default function VerificationMap({ 
+  onAssetSelect, 
+  onMapClick,
+  verifiedAssets = [],
+  assets = DEMO_ASSETS 
+}: VerificationMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const vectorLayerRef = useRef<VectorLayer | null>(null);
@@ -185,11 +197,16 @@ export default function VerificationMap() {
 
     mapRef.current = map;
 
-    // Handle map clicks to select assets
+    // Handle map clicks to select assets or add new location
     const handleMapClick = (evt: any) => {
       const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f);
       if (feature && feature.get('asset')) {
         setSelectedAsset(feature.get('asset'));
+        onAssetSelect?.(feature.get('asset'));
+      } else {
+        // No asset clicked - allow map click to add new asset
+        const coords = toLonLat(evt.coordinate);
+        onMapClick?.({ lat: coords[1], lng: coords[0] });
       }
     };
     map.on('click', handleMapClick);
