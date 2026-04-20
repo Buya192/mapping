@@ -37,13 +37,16 @@ const toolMenus = [
 export function Navbar() {
   const pathname = usePathname();
   const [dataOpen, setDataOpen] = useState(false);
+  const [analisisOpen, setAnalisisOpen] = useState(false);
   const [toolOpen, setToolOpen] = useState(false);
   const dataRef = useRef<HTMLDivElement>(null);
+  const analisisRef = useRef<HTMLDivElement>(null);
   const toolRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dataRef.current && !dataRef.current.contains(e.target as Node)) setDataOpen(false);
+      if (analisisRef.current && !analisisRef.current.contains(e.target as Node)) setAnalisisOpen(false);
       if (toolRef.current && !toolRef.current.contains(e.target as Node)) setToolOpen(false);
     };
     document.addEventListener('mousedown', handler);
@@ -80,7 +83,7 @@ export function Navbar() {
           {/* Data Aset Dropdown */}
           <div ref={dataRef} className="relative">
             <button
-              onClick={() => { setDataOpen(!dataOpen); setToolOpen(false); }}
+              onClick={() => { setDataOpen(!dataOpen); setAnalisisOpen(false); setToolOpen(false); }}
               className={`nav-link flex items-center gap-1 ${isDataPage ? 'active' : ''}`}
             >
               <Activity size={18} />
@@ -113,23 +116,23 @@ export function Navbar() {
           </div>
 
           {/* Analisis Dropdown */}
-          <div ref={dataRef} className="relative">
+          <div ref={analisisRef} className="relative">
             <button
-              onClick={() => { setDataOpen(!dataOpen); setToolOpen(false); }}
+              onClick={() => { setAnalisisOpen(!analisisOpen); setDataOpen(false); setToolOpen(false); }}
               className={`nav-link flex items-center gap-1 ${isAnalisisPage ? 'active' : ''}`}
             >
               <BarChart3 size={18} />
               Analisis
-              <ChevronDown size={14} className={`transition-transform ${dataOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown size={14} className={`transition-transform ${analisisOpen ? 'rotate-180' : ''}`} />
             </button>
-            {dataOpen && (
+            {analisisOpen && (
               <div className="dropdown-panel" style={{ minWidth: 220 }}>
                 <div className="p-1.5">
                   {analisisMenus.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      onClick={() => setDataOpen(false)}
+                      onClick={() => setAnalisisOpen(false)}
                       className={`dropdown-item ${pathname === item.href ? 'active' : ''}`}
                     >
                       <item.icon size={16} className={pathname === item.href ? 'text-[#34d399]' : 'text-[#52525b]'} />
