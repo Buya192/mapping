@@ -25,7 +25,7 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
   const [filter, setFilter] = useState('all');
   const [expandedId, setExpandedId] = useState<string | number | null>(null);
   const [page, setPage] = useState(0);
-  const [theme, setTheme] = useState<'dark' | 'light'>('light');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [tableData, setTableData] = useState(data);
   
   // CRUD modal states
@@ -81,12 +81,6 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
     toast.success('Data berhasil dihapus!');
     setDeleteConfirmOpen(false);
     setRecordToDelete(null);
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('table-theme', newTheme);
   };
 
   const filterValues = useMemo(() => {
