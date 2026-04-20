@@ -1158,7 +1158,7 @@ export default function OpenLayersMap({ initialFilterPenyulang = '' }: { initial
           ))}
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 'calc(100vh - 280px)' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
 
           {activeTab === 'layers' && (<>
             <div style={pnl}>
