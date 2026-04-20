@@ -385,6 +385,60 @@ export default function DataSistemPage() {
           </div>
         )}
 
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border font-medium transition-all ${
+                isLight
+                  ? `border-gray-300 ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`
+                  : `border-[#27272a] ${currentPage === 1 ? 'bg-[#09090b] text-[#3f3f46] cursor-not-allowed' : 'bg-[#18181b] text-[#a1a1aa] hover:bg-[#1c1c1e] hover:text-white'}`
+              }`}
+            >
+              <ChevronPrev size={16} /> Sebelumnya
+            </button>
+
+            {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+              let page = i + 1;
+              if (totalPages > 5 && currentPage > 3) {
+                page = currentPage - 2 + i;
+              }
+              if (page > totalPages) return null;
+              return (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-10 h-10 rounded-lg border font-bold transition-all ${
+                    currentPage === page
+                      ? isLight
+                        ? 'bg-blue-500 text-white border-blue-500'
+                        : 'bg-[#6366f1] text-white border-[#6366f1]'
+                      : isLight
+                      ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      : 'bg-[#18181b] text-[#a1a1aa] border-[#27272a] hover:bg-[#1c1c1e] hover:text-white'
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border font-medium transition-all ${
+                isLight
+                  ? `border-gray-300 ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`
+                  : `border-[#27272a] ${currentPage === totalPages ? 'bg-[#09090b] text-[#3f3f46] cursor-not-allowed' : 'bg-[#18181b] text-[#a1a1aa] hover:bg-[#1c1c1e] hover:text-white'}`
+              }`}
+            >
+              Selanjutnya <ChevronNext size={16} />
+            </button>
+          </div>
+        )}
+
         {/* Summary Cards */}
         {!loading && filtered.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mt-6">
@@ -560,7 +614,7 @@ export default function DataSistemPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="max-w-[1800px] mx-auto px-6 py-4 flex gap-4 items-center">
+      <div className="max-w-[1800px] mx-auto px-6 py-4 flex gap-4 items-center justify-between">
         <div className="relative flex-1 max-w-md">
           <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${isLight ? 'text-gray-400' : 'text-[#3f3f46]'}`} size={16} />
           <input
@@ -568,8 +622,12 @@ export default function DataSistemPage() {
             placeholder="Cari penyulang..."
             className={`w-full border rounded py-2 pl-9 pr-3 outline-none transition-all text-sm shadow-sm font-medium ${inputBg} ${inputFocus}`}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
           />
+        </div>
+        {/* Pagination Info */}
+        <div className={`text-sm font-medium ${isLight ? 'text-gray-600' : 'text-[#71717a]'}`}>
+          Halaman {currentPage} dari {totalPages || 1}
         </div>
       </div>
 
@@ -607,73 +665,18 @@ export default function DataSistemPage() {
                     </td>
                   </tr>
                 ))
-              ) : filtered.length > 0 ? (
+              ) : paginatedData.length > 0 ? (
                 <>
-                  {filtered.map((row, i) => {
-                    const color = getColor(row.penyulang);
-                    return (
-                      <tr key={row.penyulang} className={`border-b ${trBorder} ${trHover} transition-colors`}>
-                        <td className={`px-3 py-3 text-center font-medium border-r ${isLight ? 'border-gray-200 text-gray-500' : 'border-[#1c1c1e] text-[#3f3f46] font-mono'}`}>
-                          {i + 1}
-                        </td>
-                        {/* Penyulang */}
-                        <td className={`px-4 py-3 border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <div className="flex items-center gap-2">
-                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}60` }} />
-                            <div>
-                              <span className="font-bold text-sm" style={{ color }}>{row.penyulang}</span>
-                              {row.sub_feeders && row.sub_feeders.length > 0 && (
-                                <div className={`text-[9px] mt-0.5 ${isLight ? 'text-gray-400' : 'text-[#52525b]'}`}>
-                                  + {row.sub_feeders.join(', ')}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                        {/* Tiang */}
-                        <td className={`px-4 py-3 text-center border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <span className={`font-bold text-sm ${isLight ? 'text-gray-900' : 'text-white'}`}>{row.tiang.toLocaleString()}</span>
-                        </td>
-                        {/* JTM */}
-                        <td className={`px-4 py-3 text-center border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <span className="font-mono font-bold text-blue-500">{row.jtm_kms.toFixed(2)}</span>
-                        </td>
-                        {/* JTR */}
-                        <td className={`px-4 py-3 text-center border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <span className="font-mono font-bold text-cyan-500">{row.jtr_kms.toFixed(2)}</span>
-                        </td>
-                        {/* Gardu */}
-                        <td className={`px-4 py-3 text-center border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <span className={`font-bold ${isLight ? 'text-gray-900' : 'text-emerald-400'}`}>{row.gardu}</span>
-                        </td>
-                        {/* FCO */}
-                        <td className={`px-4 py-3 text-center border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${row.fco > 0 ? 'bg-sky-500/10 text-sky-400' : isLight ? 'text-gray-400' : 'text-[#3f3f46]'}`}>
-                            {row.fco || '—'}
-                          </span>
-                        </td>
-                        {/* REC */}
-                        <td className={`px-4 py-3 text-center border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${row.rec > 0 ? 'bg-rose-500/10 text-rose-400' : isLight ? 'text-gray-400' : 'text-[#3f3f46]'}`}>
-                            {row.rec || '—'}
-                          </span>
-                        </td>
-                        {/* Pelanggan */}
-                        <td className={`px-4 py-3 text-center border-r ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <span className={`font-bold text-sm ${isLight ? 'text-gray-900' : 'text-amber-400'}`}>{row.pelanggan.toLocaleString()}</span>
-                        </td>
-                        {/* Peta Link */}
-                        <td className={`px-4 py-3 text-center border-l ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                          <Link
-                            href={`/peta?penyulang=${encodeURIComponent(row.penyulang)}`}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 hover:text-indigo-300 border border-indigo-500/20"
-                          >
-                            <Map size={12} /> Lihat
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {paginatedData.map((row, i) => (
+                    <SystemTableRow 
+                      key={row.penyulang}
+                      row={row}
+                      index={(currentPage - 1) * ROWS_PER_PAGE + i}
+                      isLight={isLight}
+                      getColor={getColor}
+                      columns={columns}
+                    />
+                  ))}
 
                   {/* TOTAL ROW */}
                   <tr className={`${isLight ? 'bg-gray-100 border-t-2 border-gray-300' : 'bg-[#18181b] border-t-2 border-[#3f3f46]'} font-bold`}>
