@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { AlertTriangle, Zap, TrendingUp, Shield, MapPin, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { BebanChart } from '@/components/dashboard/BebanChart';
 import { GangguanChart } from '@/components/dashboard/GangguanChart';
 import { KeandalanChart } from '@/components/dashboard/KeandalanChart';
@@ -30,128 +29,148 @@ export default function DashboardPage() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <>
-      {/* Hero Banner */}
-      <div className="dashboard-hero">
-        <div className="max-w-1400px mx-auto px-4">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1>PLN JARKOM Dashboard</h1>
-              <p className="text-secondary mt-2">Sistem Manajemen Jaringan & Perencanaan Distribusi</p>
-            </div>
-            <div className="text-right">
-              <div className="text-secondary text-sm">Last Update</div>
-              <div className="font-mono text-accent-indigo">{mounted && <LiveClock />}</div>
-            </div>
+    <div className="main-content max-w-7xl mx-auto">
+      {/* Dashboard Hero */}
+      <div className="dashboard-hero mb-8">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="mb-2">PLN JARKOM Dashboard</h1>
+            <p>Sistem Manajemen Jaringan & Perencanaan Distribusi Tenaga Listrik</p>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-text-tertiary">Live Update</div>
+            <div className="font-mono text-base text-color-info mt-1">{mounted && <LiveClock />}</div>
           </div>
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="mb-8">
-        <SummaryCards />
-      </div>
-
-      {/* Verification Status */}
-      <div className="mb-8">
-        <div className="glass-card-header mb-4">
-          <CheckCircle2 size={16} />
-          [ VERIFICATION_STATUS ] Field Validation Metrics
+      {/* Summary Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="stat-card healthy">
+          <div className="stat-label flex items-center gap-2">
+            <CheckCircle2 size={14} />
+            Operational
+          </div>
+          <div className="stat-value">847</div>
+          <div className="stat-change">+12 this week</div>
         </div>
-        <VerificationStats />
-      </div>
-      
-      {/* Quick Discovery Links */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <a href="/rekomendasi" className="discovery-card group" style={{ '--accent': '#818cf8' } as React.CSSProperties}>
-          <div className="discovery-card-accent" style={{ background: '#818cf8' }} />
-          <div className="flex items-start gap-4 relative z-10">
-            <div className="text-[#818cf8] mt-1 group-hover:scale-110 transition-transform">
-              <TrendingUp size={24} />
-            </div>
-            <div>
-              <h3 className="font-bold tracking-tight text-[#e4e4e7] text-lg">AI Expansion Module</h3>
-              <p className="text-[10px] font-mono text-[#52525b] mt-1 uppercase tracking-widest">Geo-Spatial analytics & blind-spot metrics</p>
-            </div>
+        <div className="stat-card warning">
+          <div className="stat-label flex items-center gap-2">
+            <AlertTriangle size={14} />
+            Maintenance Due
           </div>
-        </a>
-        <a href="/diagram" className="discovery-card group" style={{ '--accent': '#22d3ee' } as React.CSSProperties}>
-          <div className="discovery-card-accent" style={{ background: '#22d3ee' }} />
-          <div className="flex items-start gap-4 relative z-10">
-            <div className="text-[#22d3ee] mt-1 group-hover:scale-110 transition-transform">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            </div>
-            <div>
-              <h3 className="font-bold tracking-tight text-[#e4e4e7] text-lg">SLD Core Generator</h3>
-              <p className="text-[10px] font-mono text-[#52525b] mt-1 uppercase tracking-widest">Single Line Diagram auto-plot system</p>
-            </div>
+          <div className="stat-value">23</div>
+          <div className="stat-change">5 urgent</div>
+        </div>
+        <div className="stat-card critical">
+          <div className="stat-label flex items-center gap-2">
+            <Shield size={14} />
+            Critical Issues
           </div>
-        </a>
-        <Link href="/verifikasi" className="discovery-card group" style={{ '--accent': '#34d399' } as React.CSSProperties}>
-          <div className="discovery-card-accent" style={{ background: '#34d399' }} />
-          <div className="flex items-start gap-4 relative z-10">
-            <div className="text-[#34d399] mt-1 group-hover:scale-110 transition-transform">
-              <CheckCircle2 size={24} />
-            </div>
-            <div>
-              <h3 className="font-bold tracking-tight text-[#e4e4e7] text-lg">Verifikasi Lapangan</h3>
-              <p className="text-[10px] font-mono text-[#52525b] mt-1 uppercase tracking-widest">GPS-based asset verification & validation</p>
-            </div>
+          <div className="stat-value">3</div>
+          <div className="stat-change">All assigned</div>
+        </div>
+        <div className="stat-card info">
+          <div className="stat-label flex items-center gap-2">
+            <MapPin size={14} />
+            Network Coverage
           </div>
-        </Link>
-        <Link href="/peta" className="discovery-card group" style={{ '--accent': '#f59e0b' } as React.CSSProperties}>
-          <div className="discovery-card-accent" style={{ background: '#f59e0b' }} />
-          <div className="flex items-start gap-4 relative z-10">
-            <div className="text-[#f59e0b] mt-1 group-hover:scale-110 transition-transform">
-              <MapPin size={24} />
-            </div>
-            <div>
-              <h3 className="font-bold tracking-tight text-[#e4e4e7] text-lg">Network Topology Map</h3>
-              <p className="text-[10px] font-mono text-[#52525b] mt-1 uppercase tracking-widest">Interactive network visualization & analysis</p>
-            </div>
-          </div>
-        </Link>
+          <div className="stat-value">94%</div>
+          <div className="stat-change">6 villages pending</div>
+        </div>
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-3 glass-card">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-2 glass-card">
           <div className="glass-card-header">
-            <span>[ CHART_BLOCK 01 ] 24H FEEDER LOAD</span>
-            <span className="text-[#34d399] text-[10px] animate-pulse">● LIVE</span>
+            <Zap size={14} />
+            Beban Sistem 24 Jam
           </div>
-          <div className="p-4"><BebanChart /></div>
+          <div className="h-80"><BebanChart /></div>
         </div>
         <div className="glass-card">
-          <div className="glass-card-header">[ CHART_BLOCK 02 ] FAULT CAUSES</div>
-          <div className="p-4"><GangguanChart /></div>
+          <div className="glass-card-header">
+            <AlertTriangle size={14} />
+            Penyebab Gangguan
+          </div>
+          <div className="h-80"><GangguanChart /></div>
         </div>
-        <div className="glass-card lg:col-span-2">
-          <div className="glass-card-header">[ CHART_BLOCK 03 ] RELIABILITY TREND</div>
-          <div className="p-4"><KeandalanChart /></div>
+      </div>
+
+      {/* Secondary Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="glass-card">
+          <div className="glass-card-header">
+            <TrendingUp size={14} />
+            Keandalan Sistem
+          </div>
+          <div className="h-72"><KeandalanChart /></div>
+        </div>
+        <div className="glass-card">
+          <div className="glass-card-header">
+            <CheckCircle2 size={14} />
+            Verifikasi Lapangan
+          </div>
+          <div className="p-6">
+            <VerificationStats />
+          </div>
         </div>
       </div>
 
       {/* Asset Summary Table */}
-      <div className="mb-8 glass-card overflow-hidden">
-        <div className="glass-card-header flex items-center justify-between">
-          <span>[ TERMINAL_MATRIX ] ASSET_REGISTRY</span>
-          <span className="text-[#34d399] animate-pulse text-[10px]">● SYNC</span>
+      <div className="glass-card overflow-hidden mb-8">
+        <div className="glass-card-header">
+          <Shield size={14} />
+          Asset Summary
         </div>
-        <AssetSummaryTable />
+        <div className="overflow-x-auto">
+          <AssetSummaryTable />
+        </div>
       </div>
 
-      {/* Gangguan Table */}
-      <div className="mb-8 glass-card relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#ef4444] to-[#f97316]"></div>
-        <div className="glass-card-header text-[#ef4444] flex items-center justify-between">
-          <span>[ ALERTS ] CRITICAL_FAULTS</span>
-          <AlertTriangle size={14} className="text-[#ef4444]" />
+      {/* Critical Alerts */}
+      <div className="glass-card overflow-hidden border-l-4 border-l-[var(--status-critical)]">
+        <div className="glass-card-header text-color-critical">
+          <AlertTriangle size={14} />
+          Gangguan Kritis
         </div>
-        <div className="pl-2">
+        <div className="overflow-x-auto">
           <GangguanTable />
         </div>
       </div>
-    </>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-8 border-t border-glass-border">
+        <Link href="/analisis" className="glass-card hover:glass-card-elevated group">
+          <div className="flex items-center gap-3 mb-2">
+            <TrendingUp size={18} className="text-color-info group-hover:translate-y-[-2px] transition-transform" />
+            <h3 className="font-semibold">Analisis</h3>
+          </div>
+          <p className="text-xs text-text-secondary">Cable & pole analysis</p>
+        </Link>
+        <Link href="/diagram" className="glass-card hover:glass-card-elevated group">
+          <div className="flex items-center gap-3 mb-2">
+            <Shield size={18} className="text-color-warning group-hover:translate-y-[-2px] transition-transform" />
+            <h3 className="font-semibold">SLD Generator</h3>
+          </div>
+          <p className="text-xs text-text-secondary">Single line diagrams</p>
+        </Link>
+        <Link href="/verifikasi" className="glass-card hover:glass-card-elevated group">
+          <div className="flex items-center gap-3 mb-2">
+            <CheckCircle2 size={18} className="text-color-success group-hover:translate-y-[-2px] transition-transform" />
+            <h3 className="font-semibold">Verifikasi</h3>
+          </div>
+          <p className="text-xs text-text-secondary">Field verification</p>
+        </Link>
+        <Link href="/peta" className="glass-card hover:glass-card-elevated group">
+          <div className="flex items-center gap-3 mb-2">
+            <MapPin size={18} className="text-color-info group-hover:translate-y-[-2px] transition-transform" />
+            <h3 className="font-semibold">Network Map</h3>
+          </div>
+          <p className="text-xs text-text-secondary">Interactive topology</p>
+        </Link>
+      </div>
+    </div>
   );
 }
