@@ -1,72 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readGeoJSON, flattenFeatures } from '@/lib/geojson-reader';
+import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
     const type = request.nextUrl.searchParams.get('type');
 
     if (type === 'gardu') {
-      const geojson = await readGeoJSON('gardu-arcgis.geojson');
-      const gardus = flattenFeatures(geojson).map((p: any) => ({
-        id: p.OBJECTID || p.Name || String(Math.random()),
-        name: p.Name || p.NAMAGD || 'Unnamed',
-        namaGardu: p.NAMAGD || p.Name || '',
-        construction: p.RUJUKAN_KONSTRUKSI || '',
-        capacity_kva: parseInt(p.KAPASITAS) || 0,
-        brand: p.MANUFACTURER || '',
-        phases: p.FASA_TRAFO || '',
-        feeder: p.NAMAPENYULANG || '',
-        lat: p.lat || 0,
-        lng: p.lng || 0,
-        status: 'aktif',
-      }));
-      return NextResponse.json(gardus);
+      const { data: gardus, error } = await supabase
+        .from('gardus')
+        .select('*')
+        .order('name');
+      if (error) throw error;
+      return NextResponse.json(gardus || []);
     }
 
     if (type === 'tiang') {
-      const geojson = await readGeoJSON('tiang-arcgis.geojson');
-      const tiang = flattenFeatures(geojson).slice(0, 500).map((p: any) => ({
-        id: p.OBJECTID || String(Math.random()),
-        nama_tiang: p.NOTIANG || p.NOTIANGTR || p.Name || '-',
-        penyulang: p.NAMAPENYULANG || '-',
-        jenis_tiang: p.JENIS_TIANG || '-',
-        tipe_tiang: p.UKURAN_TIANG || '-',
-        kekuatan_tiang: parseInt(p.KEKUATAN_TIANG) || 0,
-        konstruksi_1: p.KODE_KONSTRUKSI_1 || '-',
-        jenis_hantaran_1: p.JENIS_PENGHANTAR || '-',
-        ukuran_hantaran_1: p.UKURAN_PENGHANTAR || '-',
-        penopang: p.PENOPANG || '',
-        latitude: p.lat || 0,
-        longitude: p.lng || 0,
-        namaGardu: p.NAMAGD || '-',
-        kondisiTiang: p.KONDISI_TIANG || '-',
-      }));
-      return NextResponse.json(tiang);
+      const { data: tiang, error } = await supabase
+        .from('tiang_jtm')
+        .select('id, nama_tiang, penyulang, jenis_tiang, tipe_tiang, kekuatan_tiang, konstruksi_1, jenis_hantaran_1, ukuran_hantaran_1, penopang, latitude, longitude, "namaGardu", "kondisiTiang"')
+        .order('id');
+      if (error) throw error;
+      return NextResponse.json(tiang || []);
     }
 
     // Default: return both (for dashboard/store)
-    const garduGeo = await readGeoJSON('gardu-arcgis.geojson');
-    const gardus = flattenFeatures(garduGeo).map((p: any) => ({
-      id: p.OBJECTID || p.Name || String(Math.random()),
-      nama: p.NAMAGD || p.Name || 'Unnamed',
-      name: p.Name || '',
-      penyulang: p.NAMAPENYULANG || '',
-      kapasitas_kva: parseInt(p.KAPASITAS) || 0,
+    const { data: garduData, error: garduErr } = await supabase
+      .from('gardus')
+      .select('id, name, "namaGardu", feeder, capacity_kva, construction, brand, lat, lng')
+      .order('name');
+    if (garduErr) throw garduErr;
+
+    const gardus = (garduData || []).map((g: any) => ({
+      ...g,
+      nama: g.namaGardu || g.name || 'Unnamed',
+      penyulang: g.feeder || '',
+      kapasitas_kva: g.capacity_kva || 0,
       kapasitas_mva: 0,
-      jenis_konstruksi: p.RUJUKAN_KONSTRUKSI || 'Portal',
-      lat: p.lat || 0,
-      lng: p.lng || 0,
+      jenis_konstruksi: g.construction || 'Portal',
     }));
 
-    const tiangGeo = await readGeoJSON('tiang-arcgis.geojson');
-    const tiangJTM = flattenFeatures(tiangGeo).slice(0, 100).map((p: any) => ({
-      nama_tiang: p.NOTIANG || p.NOTIANGTR || p.Name || '-',
-      penyulang: p.NAMAPENYULANG || '-',
-      tipe_tiang: p.UKURAN_TIANG || '-',
-      kekuatan_tiang: parseInt(p.KEKUATAN_TIANG) || 0,
-      jenis_hantaran_1: p.JENIS_PENGHANTAR || '-',
-      ukuran_hantaran_1: p.UKURAN_PENGHANTAR || '-',
-      penopang: p.PENOPANG || '',
+    const { data: tiangData, error: tiangErr } = await supabase
+      .from('tiang_jtm')
+      .select('id, nama_tiang, penyulang, tipe_tiang, kekuatan_tiang, jenis_hantaran_1, ukuran_hantaran_1, penopang, latitude, longitude')
+      .limit(500)
+      .order('id');
+    if (tiangErr) throw tiangErr;
+
+    const tiangJTM = (tiangData || []).map((t: any) => ({
+      ...t,
+      lat: t.latitude,
+      lng: t.longitude,
     }));
 
     return NextResponse.json({ gardus, tiangJTM });

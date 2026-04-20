@@ -18,6 +18,7 @@ const dataMenus = [
   { href: '/data/pembangkit', label: 'Pembangkit', sub: 'PLTS & PLTD · 14', icon: Cpu },
   { href: '/data/proteksi', label: 'Proteksi', sub: 'FCO & Recloser · 92', icon: Shield },
   { href: '/data/arcgis', label: 'Titik GIS Ekstra', sub: 'arg.gdb · 38', icon: Radio },
+  { href: '/data/sistem', label: 'Data Sistem', sub: 'ringkasan per penyulang', icon: BarChart3 },
 ];
 
 const toolMenus = [

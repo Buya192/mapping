@@ -152,8 +152,43 @@ function getBasemapLayer(type: string): TileLayer {
   return (opts[type] || opts.satellite)();
 }
 
+// === PENYULANG GROUPS: Main feeder → sub-feeders (connected through GH/gardu hubung) ===
+// Sumber: PLTD Fanating & PLTD Kadelang → GH → Penyulang
+const PENYULANG_GROUPS: Record<string, string[]> = {
+  'MALI':              ['MALI', 'BANDARA', 'KAMAIFUI', 'PLTS KUNEMAN', 'PLTS LANGKURU'],
+  'ALOR KECIL':        ['ALOR KECIL', 'BATU NIRWALA'],
+  'BATUNIRWALA':       ['BATUNIRWALA', 'BATUNIRWANA'],
+  'BINONGKO':          ['BINONGKO', 'KALABAHI', 'EKSPRES KALABAHI'],
+  'KABIR':             ['KABIR', 'NULLE', 'TREWENG'],
+  'BARANUSA':          ['BARANUSA', 'NULLE/BARANUSA'],
+  'MORU':              ['MORU'],
+  'MARITAING':         ['MARITAING', 'MARATAING'],
+  'PURA':              ['PURA'],
+  'PROBUR':            ['PROBUR'],
+};
+
+// Reverse lookup: sub-feeder → main feeder
+const SUB_TO_MAIN: Record<string, string> = {};
+Object.entries(PENYULANG_GROUPS).forEach(([main, subs]) => {
+  subs.forEach(sub => { SUB_TO_MAIN[sub] = main; });
+});
+
+// Check if an asset's penyulang matches the filter (including sub-feeders)
+function matchesPenyulangFilter(assetPenyulang: string, filterValue: string): boolean {
+  if (!filterValue) return true; // no filter = show all
+  const ap = assetPenyulang.toUpperCase();
+  const fv = filterValue.toUpperCase();
+  if (ap === fv) return true;
+  const filterGroup = PENYULANG_GROUPS[fv];
+  if (filterGroup && filterGroup.includes(ap)) return true;
+  const assetMain = SUB_TO_MAIN[ap];
+  const filterMain = SUB_TO_MAIN[fv];
+  if (assetMain && filterMain && assetMain === filterMain) return true;
+  return false;
+}
+
 // ===== COMPONENT =====
-export default function OpenLayersMap() {
+export default function OpenLayersMap({ initialFilterPenyulang = '' }: { initialFilterPenyulang?: string }) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -189,6 +224,9 @@ export default function OpenLayersMap() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'layers' | 'planning' | 'analysis'>('layers');
+
+  // Penyulang filter
+  const [filterPenyulang, setFilterPenyulang] = useState<string>(initialFilterPenyulang ? initialFilterPenyulang.toUpperCase() : '');
 
   // Survey
   const [surveyMode, setSurveyMode] = useState<false | 'JTM' | 'JTR'>(false);
@@ -232,9 +270,14 @@ export default function OpenLayersMap() {
   const hardwareAssets = useAssetStore(s => s.hardwareAssets);
 
   const penyulangList = useMemo(() => {
-    const set = new Set<string>();
-    tiangJTM.forEach(t => { if (t.penyulang) set.add(t.penyulang.toUpperCase()); });
-    return Array.from(set).sort();
+    // Show main feeder groups + any orphan penyulang names
+    const mainSet = new Set<string>(Object.keys(PENYULANG_GROUPS));
+    // Also add any penyulang from data not in groups
+    tiangJTM.forEach(t => {
+      const p = (t.penyulang || '').toUpperCase();
+      if (p && !SUB_TO_MAIN[p]) mainSet.add(p);
+    });
+    return Array.from(mainSet).sort();
   }, [tiangJTM]);
 
   const haversine = (a: [number, number], b: [number, number]) => {
@@ -627,48 +670,56 @@ export default function OpenLayersMap() {
     map.getLayers().insertAt(0, getBasemapLayer(basemap));
   }, [basemap]);
 
-  // ===== RENDER JTM LINES =====
+  // ===== RENDER JTM LINES (with penyulang group filter) =====
   useEffect(() => {
     if (!isReady || !jtmLineLayerRef.current || jtmLineData.length === 0) return;
     const source = jtmLineLayerRef.current.getSource()!;
     source.clear();
+    let count = 0;
     jtmLineData.forEach(seg => {
       if (!seg.coordinates || seg.coordinates.length < 2) return;
+      if (!matchesPenyulangFilter(seg.penyulang || '', filterPenyulang)) return;
       const coords = seg.coordinates.map((c: number[]) => fromLonLat(c));
       const f = new Feature({ geometry: new LineString(coords) });
       f.setProperties({ penyulang: seg.penyulang, konduktor: seg.konduktor });
       source.addFeature(f);
+      count++;
     });
-    console.log(`[Map] JTM lines loaded: ${jtmLineData.length} penyulang segments`);
-  }, [jtmLineData, isReady]);
+    console.log(`[Map] JTM lines rendered: ${count}/${jtmLineData.length} (filter: ${filterPenyulang || 'all'})`);
+  }, [jtmLineData, isReady, filterPenyulang]);
 
-  // ===== RENDER JTR LINES =====
+  // ===== RENDER JTR LINES (with penyulang group filter) =====
   useEffect(() => {
     if (!isReady || !jtrLineLayerRef.current || jtrLineData.length === 0) return;
     const source = jtrLineLayerRef.current.getSource()!;
     source.clear();
+    let count = 0;
     jtrLineData.forEach(seg => {
       if (!seg.coordinates || seg.coordinates.length < 2) return;
+      if (!matchesPenyulangFilter(seg.penyulang || '', filterPenyulang)) return;
       const coords = seg.coordinates.map((c: number[]) => fromLonLat(c));
       const f = new Feature({ geometry: new LineString(coords) });
       f.setProperties({ gardu: seg.gardu, penyulang: seg.penyulang });
       source.addFeature(f);
+      count++;
     });
-    console.log(`[Map] JTR lines loaded: ${jtrLineData.length} segments`);
-  }, [jtrLineData, isReady]);
+    console.log(`[Map] JTR lines rendered: ${count}/${jtrLineData.length} (filter: ${filterPenyulang || 'all'})`);
+  }, [jtrLineData, isReady, filterPenyulang]);
 
-  // ===== POPULATE ASSET LAYERS =====
+  // ===== POPULATE ASSET LAYERS (with penyulang group filter) =====
   useEffect(() => {
     if (!isReady || !garduLayerRef.current) return;
     const src = garduLayerRef.current.getSource()!; src.clear();
     gardus.forEach(g => {
       const lat = g.lat || g.latitude; const lng = g.lng || g.longitude;
       if (!lat || !lng) return;
+      const gPenyulang = (g.penyulang || g.namaPenyulang || g.feeder || '').toUpperCase();
+      if (!matchesPenyulangFilter(gPenyulang, filterPenyulang)) return;
       const f = new Feature({ geometry: new Point(fromLonLat([lng, lat])) });
-      f.setProperties({ name: g.nama || g.namaGardu, konstruksi: g.jenis_konstruksi || g.konstruksi, kapasitas: g.kapasitas_kva || g.kapasitas, penyulang: g.penyulang || g.namaPenyulang, tipe: g.tipe || 'Distribusi' });
+      f.setProperties({ name: g.nama || g.namaGardu, konstruksi: g.jenis_konstruksi || g.konstruksi, kapasitas: g.kapasitas_kva || g.kapasitas, penyulang: gPenyulang, tipe: g.tipe || 'Distribusi' });
       src.addFeature(f);
     });
-  }, [gardus, isReady]);
+  }, [gardus, isReady, filterPenyulang]);
 
   useEffect(() => {
     if (!isReady || !tiangLayerRef.current) return;
@@ -676,11 +727,13 @@ export default function OpenLayersMap() {
     tiangJTM.forEach(t => {
       const lat = t.lat || t.latitude; const lng = t.lng || t.longitude;
       if (!lat || !lng) return;
+      const tPenyulang = (t.penyulang || '').toUpperCase();
+      if (!matchesPenyulangFilter(tPenyulang, filterPenyulang)) return;
       const f = new Feature({ geometry: new Point(fromLonLat([lng, lat])) });
-      f.setProperties({ name: t.nama_tiang || (t as any).name, penyulang: (t.penyulang || '').toUpperCase(), tipeKonstruksi: t.tipe_tiang, jenisTiang: t.jenis_tiang });
+      f.setProperties({ name: t.nama_tiang || (t as any).name, penyulang: tPenyulang, tipeKonstruksi: t.tipe_tiang, jenisTiang: t.jenis_tiang });
       src.addFeature(f);
     });
-  }, [tiangJTM, isReady]);
+  }, [tiangJTM, isReady, filterPenyulang]);
 
   useEffect(() => {
     if (!isReady || !proteksiLayerRef.current) return;
@@ -1021,6 +1074,25 @@ export default function OpenLayersMap() {
             style={{ flex: 1, padding: '7px 0', fontSize: 12, border: 'none', background: 'none', outline: 'none', color: '#e2e8f0' }} />
         </div>
 
+        {/* Penyulang Filter */}
+        <select
+          value={filterPenyulang}
+          onChange={(e) => setFilterPenyulang(e.target.value)}
+          style={{
+            padding: '6px 10px', fontSize: 11, fontWeight: 700, borderRadius: 8,
+            background: filterPenyulang ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.06)',
+            border: filterPenyulang ? '1px solid rgba(99,102,241,0.4)' : '1px solid rgba(255,255,255,0.08)',
+            color: filterPenyulang ? '#a5b4fc' : '#94a3b8',
+            cursor: 'pointer', outline: 'none', flexShrink: 0, minWidth: 120,
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          <option value="" style={{ background: '#0f172a' }}>🔌 Semua Penyulang</option>
+          {penyulangList.map(p => (
+            <option key={p} value={p} style={{ background: '#0f172a' }}>{p}</option>
+          ))}
+        </select>
+
         {/* Stats */}
         <div style={{ display: 'flex', gap: 12, fontSize: 10, color: '#64748b', fontWeight: 600, flexShrink: 0 }}>
           <span>🏭 {garduCount}</span>
@@ -1039,6 +1111,14 @@ export default function OpenLayersMap() {
           {showSidebar ? '✕' : '☰'}
         </button>
       </div>
+
+      {/* Active Penyulang filter banner */}
+      {filterPenyulang && (
+        <div style={{ position: 'absolute', top: 50, left: '50%', transform: 'translateX(-50%)', zIndex: 15, background: `rgba(99,102,241,0.9)`, color: '#fff', padding: '6px 16px', borderRadius: 16, fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 16px rgba(99,102,241,0.3)' }}>
+          🔌 Filter: {filterPenyulang}
+          <button onClick={() => setFilterPenyulang('')} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '2px 8px', borderRadius: 6, cursor: 'pointer', fontWeight: 700, fontSize: 10 }}>RESET</button>
+        </div>
+      )}
 
       {/* Search results dropdown */}
       {searchResults.length > 0 && (

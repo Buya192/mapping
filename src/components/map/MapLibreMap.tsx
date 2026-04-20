@@ -16,6 +16,7 @@ import { draw20kVTopology, runLoadFlowSimulation } from '@/lib/api-python';
 import toast from 'react-hot-toast';
 import { buildNetworkGraph, simulateFault, findNearestNode, type FaultResult, type NetworkNode } from '@/lib/topology-engine';
 import FaultAnalysisPanel from './FaultAnalysisPanel';
+import MapSearchFilter from './MapSearchFilter';
 import type Graph from 'graphology';
 
 // OpenInfraMap colors
@@ -1341,6 +1342,27 @@ export default function MapLibreMap() {
     });
   }, [layers, isReady]);
 
+  // Filter ArcGIS JTM layer by penyulang
+  useEffect(() => {
+    if (!isReady || !mapInstance.current) return;
+    const map = mapInstance.current;
+    if (!map.getLayer('jtm-arcgis-layer')) return;
+
+    if (filterPenyulang === 'all') {
+      map.setFilter('jtm-arcgis-layer', null);
+    } else {
+      // Match against penyulang/feeder/NAMAPENYULANG in multiple property naming conventions
+      map.setFilter('jtm-arcgis-layer', [
+        'any',
+        ['==', ['upcase', ['coalesce', ['get', 'penyulang'], '']], filterPenyulang],
+        ['==', ['upcase', ['coalesce', ['get', 'feeder'], '']], filterPenyulang],
+        ['==', ['upcase', ['coalesce', ['get', 'NAMAPENYULANG'], '']], filterPenyulang],
+      ]);
+    }
+  }, [filterPenyulang, isReady]);
+
+
+
   // JOSM Upload handler
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1632,7 +1654,20 @@ export default function MapLibreMap() {
   return (
     <div className="map-container" style={{ display: 'flex', height: '100%', width: '100%', position: 'relative', fontFamily: 'Inter, sans-serif' }}>
       <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
-      
+
+      {/* ===== SEARCH & FILTER PANEL (top-left overlay) ===== */}
+      {isReady && (
+        <MapSearchFilter
+          mapInstance={mapInstance.current}
+          gardus={gardus}
+          tiangJTM={tiangJTM}
+          penyulangList={penyulangList}
+          filterPenyulang={filterPenyulang}
+          onFilterPenyulang={(p) => setFilterPenyulang(p)}
+          batasDesaGeoJSON={batasDesaGeoJSON}
+        />
+      )}
+
       {/* Fault Analysis Overlay */}
       <FaultAnalysisPanel
         result={faultResult}
