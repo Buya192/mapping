@@ -1144,7 +1144,7 @@ export default function OpenLayersMap({ initialFilterPenyulang = '' }: { initial
       )}
 
       {/* ===== SIDEBAR ===== */}
-      <div style={{ position: 'absolute', top: 44, right: showSidebar ? 0 : -340, width: 330, bottom: 0, zIndex: 5, background: 'rgba(10,14,26,0.92)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgba(255,255,255,0.06)', transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 64, right: showSidebar ? 0 : -340, width: 330, bottom: 0, zIndex: 5, background: 'rgba(10,14,26,0.92)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgba(255,255,255,0.06)', transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Tabs */}
         <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
           {([
@@ -1158,7 +1158,7 @@ export default function OpenLayersMap({ initialFilterPenyulang = '' }: { initial
           ))}
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 'calc(100vh - 280px)' }}>
 
           {activeTab === 'layers' && (<>
             <div style={pnl}>
