@@ -740,11 +740,13 @@ export default function OpenLayersMap({ initialFilterPenyulang = '' }: { initial
     const src = proteksiLayerRef.current.getSource()!; src.clear();
     demoProteksi.forEach(p => {
       if (!p.latitude || !p.longitude) return;
+      const pPenyulang = (p.penyulang || '').toUpperCase();
+      if (!matchesPenyulangFilter(pPenyulang, filterPenyulang)) return;
       const f = new Feature({ geometry: new Point(fromLonLat([p.longitude, p.latitude])) });
-      f.setProperties({ name: p.nama, jenis: p.jenis, penyulang: p.penyulang });
+      f.setProperties({ name: p.nama, jenis: p.jenis, penyulang: pPenyulang });
       src.addFeature(f);
     });
-  }, [isReady]);
+  }, [isReady, filterPenyulang]);
 
   useEffect(() => {
     if (!isReady || !pembangkitLayerRef.current) return;

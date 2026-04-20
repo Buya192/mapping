@@ -68,7 +68,7 @@ export async function GET() {
         jtmKmsRaw[penyulang] = (jtmKmsRaw[penyulang] || 0) + totalKm;
       });
     } catch (e) {
-      console.warn('Failed to read JTM GeoJSON:', e);
+      console.warn('[API] Failed to read JTM GeoJSON:', e);
     }
 
     // === 2. JTR length from GeoJSON ===
@@ -86,62 +86,78 @@ export async function GET() {
         jtrKmsRaw[penyulang] = (jtrKmsRaw[penyulang] || 0) + totalKm;
       });
     } catch (e) {
-      console.warn('Failed to read JTR GeoJSON:', e);
+      console.warn('[API] Failed to read JTR GeoJSON:', e);
     }
 
     // === 3. Tiang count from Supabase (paginated) ===
     const tiangRaw: Record<string, number> = {};
     let tiangOffset = 0;
     const PAGE = 1000;
-    while (true) {
-      const { data, error } = await supabase.from('tiang_jtm').select('penyulang').range(tiangOffset, tiangOffset + PAGE - 1);
-      if (error) throw error;
-      if (!data || data.length === 0) break;
-      data.forEach((r: any) => { const p = (r.penyulang || '').toUpperCase(); if (p) tiangRaw[p] = (tiangRaw[p] || 0) + 1; });
-      if (data.length < PAGE) break;
-      tiangOffset += PAGE;
+    try {
+      while (true) {
+        const { data, error } = await supabase.from('tiang_jtm').select('penyulang').range(tiangOffset, tiangOffset + PAGE - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        data.forEach((r: any) => { const p = (r.penyulang || '').toUpperCase(); if (p) tiangRaw[p] = (tiangRaw[p] || 0) + 1; });
+        if (data.length < PAGE) break;
+        tiangOffset += PAGE;
+      }
+    } catch (e) {
+      console.warn('[API] Failed to fetch tiang:', e);
     }
 
     // === 4. Gardu count from Supabase (paginated) ===
     const garduRaw: Record<string, number> = {};
     let garduOffset = 0;
-    while (true) {
-      const { data, error } = await supabase.from('gardus').select('feeder').range(garduOffset, garduOffset + PAGE - 1);
-      if (error) throw error;
-      if (!data || data.length === 0) break;
-      data.forEach((r: any) => { const p = (r.feeder || '').toUpperCase(); if (p) garduRaw[p] = (garduRaw[p] || 0) + 1; });
-      if (data.length < PAGE) break;
-      garduOffset += PAGE;
+    try {
+      while (true) {
+        const { data, error } = await supabase.from('gardus').select('feeder').range(garduOffset, garduOffset + PAGE - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        data.forEach((r: any) => { const p = (r.feeder || '').toUpperCase(); if (p) garduRaw[p] = (garduRaw[p] || 0) + 1; });
+        if (data.length < PAGE) break;
+        garduOffset += PAGE;
+      }
+    } catch (e) {
+      console.warn('[API] Failed to fetch gardu:', e);
     }
 
     // === 5. Pelanggan count from Supabase (paginated) ===
     const pelangganRaw: Record<string, number> = {};
     let pelOffset = 0;
-    while (true) {
-      const { data, error } = await supabase.from('pelanggan').select('penyulang').range(pelOffset, pelOffset + PAGE - 1);
-      if (error) throw error;
-      if (!data || data.length === 0) break;
-      data.forEach((r: any) => { const p = (r.penyulang || '').toUpperCase(); if (p) pelangganRaw[p] = (pelangganRaw[p] || 0) + 1; });
-      if (data.length < PAGE) break;
-      pelOffset += PAGE;
+    try {
+      while (true) {
+        const { data, error } = await supabase.from('pelanggan').select('penyulang').range(pelOffset, pelOffset + PAGE - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        data.forEach((r: any) => { const p = (r.penyulang || '').toUpperCase(); if (p) pelangganRaw[p] = (pelangganRaw[p] || 0) + 1; });
+        if (data.length < PAGE) break;
+        pelOffset += PAGE;
+      }
+    } catch (e) {
+      console.warn('[API] Failed to fetch pelanggan:', e);
     }
 
     // === 6. Hardware (FCO & Recloser) ===
     const fcoRaw: Record<string, number> = {};
     const recRaw: Record<string, number> = {};
-    const { data: hwData, error: hwErr } = await supabase.from('hardware_items').select('name, type');
-    if (hwErr) throw hwErr;
-    const allNames = new Set([...Object.keys(tiangRaw), ...Object.keys(garduRaw), ...Object.keys(jtmKmsRaw), ...Object.keys(jtrKmsRaw), ...Object.keys(pelangganRaw)]);
-    (hwData || []).forEach((r: any) => {
-      const nameUpper = (r.name || '').toUpperCase();
-      for (const p of allNames) {
-        if (nameUpper.includes(p)) {
-          if (r.type === 'fco') fcoRaw[p] = (fcoRaw[p] || 0) + 1;
-          if (r.type === 'recloser') recRaw[p] = (recRaw[p] || 0) + 1;
-          break;
+    try {
+      const { data: hwData, error: hwErr } = await supabase.from('hardware_items').select('name, type');
+      if (hwErr) throw hwErr;
+      const allNames = new Set([...Object.keys(tiangRaw), ...Object.keys(garduRaw), ...Object.keys(jtmKmsRaw), ...Object.keys(jtrKmsRaw), ...Object.keys(pelangganRaw)]);
+      (hwData || []).forEach((r: any) => {
+        const nameUpper = (r.name || '').toUpperCase();
+        for (const p of allNames) {
+          if (nameUpper.includes(p)) {
+            if (r.type === 'fco') fcoRaw[p] = (fcoRaw[p] || 0) + 1;
+            if (r.type === 'recloser') recRaw[p] = (recRaw[p] || 0) + 1;
+            break;
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      console.warn('[API] Failed to fetch hardware:', e);
+    }
 
     // === Aggregate all maps using PENYULANG_GROUPS ===
     const tiangAgg = aggregateToMain(tiangRaw);
@@ -173,9 +189,15 @@ export async function GET() {
       sub_feeders: PENYULANG_GROUPS[penyulang]?.filter(s => s !== penyulang) || [],
     }));
 
-    return NextResponse.json(result);
+    console.log(`[API] Sistem endpoint completed - ${result.length} penyulang aggregated`);
+
+    return NextResponse.json(result, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
   } catch (error) {
-    console.error('Sistem API Error:', error);
+    console.error('[API] Sistem Error:', error);
     return NextResponse.json([], { status: 500 });
   }
 }
