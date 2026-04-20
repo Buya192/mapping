@@ -23,6 +23,7 @@ export default function SRDataPage() {
       filterKey="namaGardu"
       filterLabel="Gardu"
       searchKeys={['namaGardu', 'id']}
+      tableName="sr"
       columns={[
         { key: 'id', label: 'ID', format: (v) => <span className="font-mono text-xs text-[#52525b]">{v || '-'}</span> },
         { key: 'namaGardu', label: 'Nama Gardu', format: (v) => <span className="font-bold text-white">{v || '-'}</span> },

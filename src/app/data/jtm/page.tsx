@@ -23,6 +23,7 @@ export default function JTMDataPage() {
       filterKey="feeder"
       filterLabel="Penyulang"
       searchKeys={['name', 'feeder', 'city', 'location']}
+      tableName="jtm"
       columns={[
         { key: 'name', label: 'Nama / Desc', format: (v) => <span className="font-bold text-white">{v || '-'}</span> },
         { key: 'feeder', label: 'Penyulang', format: (v) => v ? <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded">{v}</span> : <span className="text-[#27272a]">—</span> },

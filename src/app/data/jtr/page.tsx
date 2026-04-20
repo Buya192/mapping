@@ -23,6 +23,7 @@ export default function JTRDataPage() {
       filterKey="penyulang"
       filterLabel="Penyulang"
       searchKeys={['namaGardu', 'penyulang', 'description', 'jurusan']}
+      tableName="jtr"
       columns={[
         { key: 'description', label: 'Deskripsi', format: (v) => <span className="font-bold text-white text-xs">{v || '-'}</span> },
         { key: 'namaGardu', label: 'Gardu', format: (v) => <span className="text-xs font-bold text-cyan-400">{v || '-'}</span> },

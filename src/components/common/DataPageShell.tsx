@@ -1,8 +1,11 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronLeft, Search, Filter, Download, ChevronDown, Moon, Sun } from 'lucide-react';
+import { ChevronLeft, Search, Filter, Download, ChevronDown, Moon, Sun, Plus, Edit2, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { DataAddModal, DataEditModal, ConfirmDeleteModal } from './DataModals';
+import { addRecord, updateRecord, deleteRecord } from '@/lib/dataStorage';
+import toast from 'react-hot-toast';
 
 interface DataPageShellProps {
   title: string;
@@ -14,14 +17,24 @@ interface DataPageShellProps {
   filterKey?: string;
   filterLabel?: string;
   searchKeys?: string[];
+  tableName?: string; // for CRUD operations
 }
 
-export function DataPageShell({ title, source, icon, accentColor, data, columns, filterKey, filterLabel, searchKeys = [] }: DataPageShellProps) {
+export function DataPageShell({ title, source, icon, accentColor, data, columns, filterKey, filterLabel, searchKeys = [], tableName }: DataPageShellProps) {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [expandedId, setExpandedId] = useState<string | number | null>(null);
   const [page, setPage] = useState(0);
   const [theme, setTheme] = useState<'dark' | 'light'>('light');
+  const [tableData, setTableData] = useState(data);
+  
+  // CRUD modal states
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState<any>(null);
+  
   const PAGE_SIZE = 100;
 
   // Set theme from local storage if exists
@@ -38,25 +51,63 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
     localStorage.setItem('table-theme', newTheme);
   };
 
+  // CRUD Handlers
+  const handleAddRecord = (newData: any) => {
+    const record = { id: `${tableName}_${Date.now()}`, ...newData };
+    setTableData([...tableData, record]);
+    if (tableName) {
+      addRecord(tableName, record);
+    }
+    toast.success('Data berhasil ditambahkan!');
+    setShowAddModal(false);
+  };
+
+  const handleEditRecord = (updatedData: any) => {
+    const updated = { ...editingRecord, ...updatedData };
+    setTableData(tableData.map(d => d.id === editingRecord.id ? updated : d));
+    if (tableName && editingRecord.id) {
+      updateRecord(tableName, editingRecord.id, updated);
+    }
+    toast.success('Data berhasil diupdate!');
+    setShowEditModal(false);
+    setEditingRecord(null);
+  };
+
+  const handleDeleteRecord = () => {
+    setTableData(tableData.filter(d => d.id !== recordToDelete.id));
+    if (tableName && recordToDelete.id) {
+      deleteRecord(tableName, recordToDelete.id);
+    }
+    toast.success('Data berhasil dihapus!');
+    setDeleteConfirmOpen(false);
+    setRecordToDelete(null);
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('table-theme', newTheme);
+  };
+
   const filterValues = useMemo(() => {
-    if (!filterKey || !data || !Array.isArray(data) || !data.length) return [];
+    if (!filterKey || !tableData || !Array.isArray(tableData) || !tableData.length) return [];
     const set = new Set<string>();
     // Use standard loop for speed
-    for (let i = 0; i < data.length; i++) {
-        if (!data[i]) continue;
-        const v = data[i][filterKey];
+    for (let i = 0; i < tableData.length; i++) {
+        if (!tableData[i]) continue;
+        const v = tableData[i][filterKey];
         if (v) set.add(String(v).toUpperCase());
     }
     return Array.from(set).sort();
-  }, [data, filterKey]);
+  }, [tableData, filterKey]);
 
   const filtered = useMemo(() => {
-    if (!data || !Array.isArray(data)) return [];
-    if (!search && filter === 'all') return data.filter(Boolean); // Clean any nulls
+    if (!tableData || !Array.isArray(tableData)) return [];
+    if (!search && filter === 'all') return tableData.filter(Boolean); // Clean any nulls
     
     const term = search.toLowerCase();
     
-    return data.filter(d => {
+    return tableData.filter(d => {
       if (!d) return false;
       // Fast path checking if there's a search term
       let matchSearch = true;
@@ -74,7 +125,7 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
       const matchFilter = filter === 'all' || !filterKey || String(d[filterKey] || '').toUpperCase() === filter;
       return matchSearch && matchFilter;
     });
-  }, [data, search, filter, filterKey, searchKeys]);
+  }, [tableData, search, filter, filterKey, searchKeys]);
 
   const paginated = useMemo(() => {
     return filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -153,6 +204,10 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
               <button onClick={toggleTheme} className={`p-2.5 rounded-lg border transition-all ${isLight ? 'bg-white border-gray-300 text-gray-500 hover:text-gray-800 hover:bg-gray-50' : 'bg-[#18181b] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#1c1c1e]'}`}>
                 {isLight ? <Moon size={16} /> : <Sun size={16} />}
               </button>
+              <button onClick={() => setShowAddModal(true)}
+                      className={`flex items-center gap-2 px-4 py-2 border rounded text-sm font-semibold shadow-sm transition-all ${isLight ? 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100' : 'bg-[#06182b] border-[#0066cc] text-[#58a6ff] hover:bg-[#0d2e5c]'}`}>
+                <Plus size={16} /> Tambah
+              </button>
               <button onClick={handleExport} 
                       className={`flex items-center gap-2 px-4 py-2 border rounded text-sm font-semibold shadow-sm transition-all ${btnExportBg}`}>
                 <Download size={16} /> Export CSV
@@ -203,7 +258,8 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
                     {col.label}
                   </th>
                 ))}
-                <th className={`px-3 py-2 font-bold text-center border-l ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'} w-8`}>
+                <th className={`px-3 py-2 font-bold text-center border-l ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'} w-20`}>
+                  AKSI
                 </th>
               </tr>
             </thead>
@@ -229,8 +285,21 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
                         )}
                       </td>
                     ))}
-                    <td className={`px-3 py-2 text-center border-l ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
-                      <ChevronDown size={14} className={`${isLight ? 'text-gray-400' : 'text-[#3f3f46]'} transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    <td className={`px-3 py-2 text-center border-l flex gap-1 items-center ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
+                      <button
+                        onClick={() => { setEditingRecord(d); setShowEditModal(true); }}
+                        className={`p-1.5 rounded hover:bg-blue-500/20 text-blue-500 transition-colors`}
+                        title="Edit"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                      <button
+                        onClick={() => { setRecordToDelete(d); setDeleteConfirmOpen(true); }}
+                        className={`p-1.5 rounded hover:bg-red-500/20 text-red-500 transition-colors`}
+                        title="Delete"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </td>
                   </tr>
                   
@@ -339,6 +408,29 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
           </div>
         )}
       </div>
+
+      {/* CRUD Modals */}
+      <DataAddModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSubmit={handleAddRecord}
+        fields={columns.map(col => ({ name: col.key, label: col.label, type: 'text' }))}
+      />
+      
+      <DataEditModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSubmit={handleEditRecord}
+        record={editingRecord}
+        fields={columns.map(col => ({ name: col.key, label: col.label, type: 'text' }))}
+      />
+      
+      <ConfirmDeleteModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={handleDeleteRecord}
+        itemName={recordToDelete?.name || recordToDelete?.id || 'Record'}
+      />
     </div>
   );
 }

@@ -23,6 +23,7 @@ export default function ArcgisDataPage() {
       filterKey="folderPath"
       filterLabel="Folder"
       searchKeys={['name', 'folderPath']}
+      tableName="arcgis"
       columns={[
         { key: 'name', label: 'Nama Titik', format: (v) => <span className="font-bold text-white">{v || '-'}</span> },
         { key: 'folderPath', label: 'Folder / Sheet', format: (v) => v ? <span className="text-xs font-mono text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded">{v}</span> : <span className="text-[#27272a]">—</span> },
