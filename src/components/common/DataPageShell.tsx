@@ -14,9 +14,12 @@ interface DataPageShellProps {
   filterKey?: string;
   filterLabel?: string;
   searchKeys?: string[];
+  renderExpanded?: (row: any) => React.ReactNode;
+  renderBeforeTable?: React.ReactNode;
+  headerActions?: React.ReactNode;
 }
 
-export function DataPageShell({ title, source, icon, accentColor, data, columns, filterKey, filterLabel, searchKeys = [] }: DataPageShellProps) {
+export function DataPageShell({ title, source, icon, accentColor, data, columns, filterKey, filterLabel, searchKeys = [], renderExpanded, renderBeforeTable, headerActions }: DataPageShellProps) {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [expandedId, setExpandedId] = useState<string | number | null>(null);
@@ -150,6 +153,7 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
             </div>
             
             <div className="flex items-center gap-3">
+              {headerActions}
               <button onClick={toggleTheme} className={`p-2.5 rounded-lg border transition-all ${isLight ? 'bg-white border-gray-300 text-gray-500 hover:text-gray-800 hover:bg-gray-50' : 'bg-[#18181b] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#1c1c1e]'}`}>
                 {isLight ? <Moon size={16} /> : <Sun size={16} />}
               </button>
@@ -191,6 +195,7 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
 
       {/* Spreadsheet Table */}
       <div className="max-w-[1800px] mx-auto px-6 pb-12 transition-colors duration-200">
+        {renderBeforeTable}
         <div className={`overflow-x-auto max-h-[70vh] border ${tableContainerBorder} ${isLight ? 'bg-white' : 'bg-[#0f0f11]'}`}>
           <table className={`w-full text-left border-collapse whitespace-nowrap ${isLight ? 'text-[11px]' : 'text-sm'}`}>
             <thead className="sticky top-0 z-20">
@@ -235,28 +240,30 @@ export function DataPageShell({ title, source, icon, accentColor, data, columns,
                   </tr>
                   
                   {isExpanded && (
-                    <tr className={`${expandedBg} border-b ${trBorder}`}>
-                      <td colSpan={columns.length + 2} className="px-8 py-5">
-                        <div className={`text-xs font-bold mb-3 uppercase tracking-widest border-b pb-2 inline-block ${isLight ? 'text-gray-600 border-gray-300' : 'text-[#52525b] border-[#1c1c1e] font-mono'}`}>
-                          📋 Atribut ArcGIS
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-4">
-                          {Object.entries(d).map(([k, v]) => {
-                            if (typeof v === 'object' && v !== null) return null;
-                            const val = v != null && String(v).trim() ? String(v) : '';
-                            return (
-                              <div key={k} className="flex flex-col">
-                                <span className={`text-[10px] uppercase font-bold tracking-wide truncate ${isLight ? 'text-gray-500' : 'text-[#52525b] font-mono'}`}>{k}</span>
-                                <span className={`text-xs mt-0.5 break-words font-medium ${val ? (isLight ? 'text-gray-900' : 'text-[#d4d4d8]') : (isLight ? 'text-gray-400' : 'text-[#27272a]')}`}>
-                                  {val || '—'}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
+                     renderExpanded ? renderExpanded(d) : (
+                     <tr className={`${expandedBg} border-b ${trBorder}`}>
+                       <td colSpan={columns.length + 2} className="px-8 py-5">
+                         <div className={`text-xs font-bold mb-3 uppercase tracking-widest border-b pb-2 inline-block ${isLight ? 'text-gray-600 border-gray-300' : 'text-[#52525b] border-[#1c1c1e] font-mono'}`}>
+                           📋 Atribut ArcGIS
+                         </div>
+                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-4">
+                           {Object.entries(d).map(([k, v]) => {
+                             if (typeof v === 'object' && v !== null) return null;
+                             const val = v != null && String(v).trim() ? String(v) : '';
+                             return (
+                               <div key={k} className="flex flex-col">
+                                 <span className={`text-[10px] uppercase font-bold tracking-wide truncate ${isLight ? 'text-gray-500' : 'text-[#52525b] font-mono'}`}>{k}</span>
+                                 <span className={`text-xs mt-0.5 break-words font-medium ${val ? (isLight ? 'text-gray-900' : 'text-[#d4d4d8]') : (isLight ? 'text-gray-400' : 'text-[#27272a]')}`}>
+                                   {val || '—'}
+                                 </span>
+                               </div>
+                             );
+                           })}
+                         </div>
+                       </td>
+                     </tr>
+                     )
+                   )}
                  </React.Fragment>
                 );
               }) : (

@@ -9,27 +9,39 @@ export async function GET(req: NextRequest) {
     const penyulang = searchParams.get('penyulang');
     const verified = searchParams.get('verified');
     const limit = parseInt(searchParams.get('limit') || '1000');
+    const skipGpsFilter = searchParams.get('all') === 'true';
 
-    let query = supabase.from(table).select('*').limit(limit);
-
-    // Filter by penyulang/feeder
+    // Build base query params
+    const baseFilter: Record<string, string> = {};
     if (penyulang) {
       const feederCol = table === 'tiang_jtm' ? 'penyulang' : 'feeder';
-      query = query.eq(feederCol, penyulang);
+      baseFilter[feederCol] = penyulang;
     }
 
-    // Filter by verification status
-    if (verified === 'true') query = query.eq('verified', true);
-    if (verified === 'false') query = query.eq('verified', false);
+    // Paginate to get all rows (Supabase default limit is 1000)
+    let allData: Record<string, unknown>[] = [];
+    const pageSize = 1000;
+    let offset = 0;
 
-    const { data, error, count } = await query;
+    while (offset < limit) {
+      let query = supabase.from(table).select('*').range(offset, offset + pageSize - 1);
+      if (baseFilter.penyulang) query = query.eq('penyulang', baseFilter.penyulang);
+      if (baseFilter.feeder) query = query.eq('feeder', baseFilter.feeder);
+      if (verified === 'true') query = query.eq('verified', true);
+      if (verified === 'false') query = query.eq('verified', false);
 
-    if (error) throw error;
+      const { data, error } = await query;
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      allData = allData.concat(data);
+      if (data.length < pageSize) break;
+      offset += pageSize;
+    }
 
     // Transform for map display
-    const assets = (data || []).map(item => {
-      const lat = item.latitude || item.lat || parseFloat(item.latitudeY) || 0;
-      const lng = item.longitude || item.lng || parseFloat(item.longitudeX) || 0;
+    const assets = allData.map(item => {
+      const lat = Number(item.latitude || item.lat || item.latitudeY) || 0;
+      const lng = Number(item.longitude || item.lng || item.longitudeX) || 0;
       return {
         ...item,
         _lat: lat,
@@ -37,13 +49,14 @@ export async function GET(req: NextRequest) {
         _table: table,
         _hasGPS: lat !== 0 && lng !== 0,
       };
-    }).filter(item => item._hasGPS);
+    });
+
+    const result = skipGpsFilter ? assets : assets.filter(item => item._hasGPS);
 
     return NextResponse.json({ 
       success: true, 
-      count: assets.length,
-      totalCount: count,
-      data: assets 
+      count: result.length,
+      data: result 
     });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
