@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { 
   LayoutDashboard, Map, Zap, MapPin, Activity, Cable, Users, Radio, 
-  ChevronDown, Shield, Cpu, GitBranch, BarChart3, Wrench, FolderKanban
+  ChevronDown, Shield, Cpu, GitBranch, BarChart3, Wrench, FolderKanban,
+  CloudDownload, Navigation2
 } from 'lucide-react';
 
 const dataMenus = [
@@ -22,6 +23,8 @@ const dataMenus = [
 ];
 
 const toolMenus = [
+  { href: '/verifikasi', label: 'Verifikasi Aset', icon: Navigation2 },
+  { href: '/dream', label: 'DREAM / Maximo', icon: CloudDownload },
   { href: '/diagram', label: 'SLD Generator', icon: GitBranch },
   { href: '/keandalan', label: 'Keandalan', icon: BarChart3 },
   { href: '/rekomendasi', label: 'Rekomendasi AI', icon: Wrench },
@@ -45,7 +48,7 @@ export function Navbar() {
   }, []);
 
   const isDataPage = pathname.startsWith('/data');
-  const isToolPage = ['/diagram', '/keandalan', '/rekomendasi', '/proyek', '/perencanaan'].includes(pathname);
+  const isToolPage = ['/diagram', '/keandalan', '/rekomendasi', '/proyek', '/perencanaan', '/verifikasi', '/dream'].includes(pathname);
   const isPeta = pathname === '/peta';
 
   return (

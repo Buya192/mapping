@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, Search, Download, Moon, Sun, Map, Filter } from 'lucide-react';
+import { ChevronLeft, Search, Download, Moon, Sun, Map, Filter, Navigation2 } from 'lucide-react';
 
 const PENYULANG_COLORS: Record<string, string> = {
   MALI: '#3b82f6', MORU: '#ef4444', BATUNIRWALA: '#22c55e',
@@ -180,6 +180,9 @@ export default function DataSistemPage() {
                 <th className={`px-4 py-3 font-bold uppercase tracking-wider text-center text-[10px] border-l ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'} w-16`}>
                   PETA
                 </th>
+                <th className={`px-4 py-3 font-bold uppercase tracking-wider text-center text-[10px] border-l ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'} w-20`}>
+                  VERIFIKASI
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -261,6 +264,15 @@ export default function DataSistemPage() {
                             <Map size={12} /> Lihat
                           </Link>
                         </td>
+                        {/* Verifikasi Link */}
+                        <td className={`px-4 py-3 text-center border-l ${isLight ? 'border-gray-200' : 'border-[#1c1c1e]'}`}>
+                          <Link
+                            href={`/verifikasi?feeder=${encodeURIComponent(row.penyulang)}`}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 border border-emerald-500/20"
+                          >
+                            <Navigation2 size={12} /> Verifikasi
+                          </Link>
+                        </td>
                       </tr>
                     );
                   })}
@@ -293,11 +305,12 @@ export default function DataSistemPage() {
                       {totals.pelanggan.toLocaleString()}
                     </td>
                     <td className={`px-4 py-3 border-l ${isLight ? 'border-gray-300' : 'border-[#3f3f46]'}`} />
+                    <td className={`px-4 py-3 border-l ${isLight ? 'border-gray-300' : 'border-[#3f3f46]'}`} />
                   </tr>
                 </>
               ) : (
                 <tr>
-                  <td colSpan={columns.length + 2} className={`py-8 text-center text-xs font-mono ${isLight ? 'text-gray-400' : 'text-[#3f3f46]'}`}>
+                  <td colSpan={columns.length + 3} className={`py-8 text-center text-xs font-mono ${isLight ? 'text-gray-400' : 'text-[#3f3f46]'}`}>
                     {search ? `Tidak ditemukan penyulang "${search}"` : '⏳ Memuat data sistem...'}
                   </td>
                 </tr>
