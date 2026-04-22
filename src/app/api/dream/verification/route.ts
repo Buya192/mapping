@@ -55,11 +55,13 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST: Verify / edit / create asset
+// POST: Verify / edit / create / delete asset
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, asset_table, asset_id, data, verified_by, notes, latitude, longitude, photo_url } = body;
+    const asset_table = body.asset_table || body.table;
+    const asset_id = body.asset_id || body.id;
+    const { action, data, verified_by, notes, latitude, longitude, photo_url } = body;
 
     if (!action || !asset_table) {
       return NextResponse.json({ error: 'action dan asset_table diperlukan' }, { status: 400 });
@@ -153,7 +155,26 @@ export async function POST(req: NextRequest) {
         penyulang: data.penyulang || data.feeder,
       });
 
-      return NextResponse.json({ success: true, message: 'Aset baru berhasil ditambahkan', asset: newAsset });
+      return NextResponse.json({ success: true, message: 'Aset baru berhasil ditambahkan', id: newAsset?.id, asset: newAsset });
+    }
+
+    if (action === 'delete') {
+      if (!asset_id) {
+        return NextResponse.json({ error: 'asset_id diperlukan untuk delete' }, { status: 400 });
+      }
+
+      // Log before delete
+      await supabase.from('verifikasi_log').insert({
+        asset_table, asset_id, action: 'delete',
+        verified_by, notes: notes || 'Deleted by user',
+      });
+
+      const { error } = await supabase
+        .from(asset_table).delete().eq('id', asset_id);
+
+      if (error) throw error;
+
+      return NextResponse.json({ success: true, message: 'Aset berhasil dihapus' });
     }
 
     return NextResponse.json({ error: 'Action tidak valid' }, { status: 400 });
